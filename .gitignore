@@ -1,0 +1,4 @@
+*.odt
+*.exe
+.clang-tidy
+.idea
