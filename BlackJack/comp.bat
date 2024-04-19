@@ -1,1 +1,1 @@
-g++ *.cpp -finput-charset=UTF-8 -fexec-charset=Big5 -std=gnu++14 -o main
+g++ -I include src/*.cpp -finput-charset=UTF-8 -fexec-charset=Big5 -std=gnu++14 -o main
