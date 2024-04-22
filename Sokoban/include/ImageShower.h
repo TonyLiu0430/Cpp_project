@@ -1,12 +1,10 @@
 #pragma once
 #ifdef _WIN32
-#include "windowsClasses.h"
+#include "windowsBase.h"
 #include <string>
 #include <map>
 #include <utility>
 #include <memory>
-
-
 
 class Image {
     inline static std::map<std::string, std::shared_ptr<Image>> allImage{};

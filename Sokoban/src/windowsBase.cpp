@@ -1,5 +1,5 @@
 #ifdef _WIN32
-#include "windowsClasses.h"
+#include "windowsBase.h"
 #include <bits/stdc++.h>
 #include "util.h"
 #include "ImageShower.h"
@@ -7,7 +7,7 @@ using std::cout;
 
 using namespace std;
 
-Window::Window(HINSTANCE hInstance, int nCmdShow, string name): hInstance(hInstance), nCmdShow(nCmdShow), windowName(name) {
+MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, string name): hInstance(hInstance), nCmdShow(nCmdShow), windowName(name) {
     //const char CLASS_NAME[]  = "Sample Window Class";
     windowData.lpfnWndProc   = MainMessageHandler::WindowProc;
     windowData.hInstance     = hInstance;
@@ -17,7 +17,7 @@ Window::Window(HINSTANCE hInstance, int nCmdShow, string name): hInstance(hInsta
 
     // Create the window.
 
-    hwnd = CreateWindowEx(
+    hWnd = CreateWindowEx(
         0,                              // Optional window styles.
         windowName.c_str(),             // Window class
         windowName.c_str(),             // Window text 左上角文字
@@ -32,14 +32,14 @@ Window::Window(HINSTANCE hInstance, int nCmdShow, string name): hInstance(hInsta
         NULL        // Additional application data
         );
 
-    if (hwnd == NULL) {
+    if (hWnd == NULL) {
         throw Exception("Window Create Error");
     }
 
-    ShowWindow(hwnd, nCmdShow);
+    ShowWindow(hWnd, nCmdShow);
 }
 
-void Window::startMessageLoop() const {
+void MainWindow::startMessageLoop() const {
     // Run the message loop.
     /*  消息迴圈  */
     MSG msg = { };
