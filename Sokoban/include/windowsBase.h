@@ -57,9 +57,11 @@ public:
     }keyboardProcesser;
     /////////////////////////////////////
     class MouseProcesser {
-        std::vector<std::pair<Area, std::function<void()>>> areaCBs;
+        std::vector<std::pair<Area, std::function<void()>>> moveCBs;
+        std::vector<std::pair<Area, std::function<void()>>> clickCBs;
     public:
-        void insertEvent(const Area &area, std::function<void()> callBack);
+        void insertMoveEvent(const Area &area, std::function<void()> callBack);
+        void insertClickEvent(const Area &area, std::function<void()> callBack);
         void removeEvent(const Area &area);
         bool process(UINT uMsg, WPARAM wParam, LPARAM lParam);
     }mouseProcesser;

@@ -27,6 +27,7 @@ public:
     std::shared_ptr<Image> before;
     std::shared_ptr<Image> after;
     std::function<void(void)> action;
+    const std::string name;
     ButtonLike(std::string name, std::function<void(void)> action);
 };
 

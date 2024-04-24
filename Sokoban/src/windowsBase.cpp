@@ -176,8 +176,10 @@ void Window::registerMessageCB(UINT msg, function<void()> callBack) {
     messageCBs_noArgs[msg] = callBack;
 }
 
-void Window::insertButtonLike(const ButtonLike &button, Point) {
-/*********************************************/
+void Window::insertButtonLike(const ButtonLike &button, Point p) {
+    Area area({p.x, p.y}, {button.length, button.width});
+    mouseProcesser.insertMoveEvent(area, []()
+                               { imageShower.changeImage(button.name, button.after); })
 }
 
 void Window::KeyboardProcesser::insertEvent(WPARAM vk_code, std::function<void()> callBack) {
@@ -198,7 +200,7 @@ bool Window::KeyboardProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam)
     keyCBs[wParam]();
 }
 
-void Window::MouseProcesser::insertEvent(const Area &area, std::function<void()> callBack) {
+void Window::MouseProcesser::insertMoveEvent(const Area &area, std::function<void()> callBack) {
     areaCBs.push_back({area, callBack});
 }
 

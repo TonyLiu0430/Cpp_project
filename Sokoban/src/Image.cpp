@@ -45,7 +45,7 @@ void ImageShower::refreshInstant(HWND hWnd) {
     RedrawWindow(hWnd, nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
 }
 
-ButtonLike::ButtonLike(std::string name, std::function<void(void)> action): action(action) {
+ButtonLike::ButtonLike(std::string name, std::function<void(void)> action): name(name), action(action) {
     before = Image::getImage(name + "_before");
     after = Image::getImage(name + "_after");
     length = before->length;
