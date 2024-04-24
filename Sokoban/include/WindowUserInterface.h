@@ -1,5 +1,5 @@
 #pragma once
-#ifdef _WIN32
+#ifdef AWG
 
 #include "UserInterface.h"
 #include "windowsBase.h"
@@ -9,8 +9,7 @@
 
 class WindowUserInterface: public UserInterface {
 public:
-    MainWindow window;
-    WindowUserInterface(HINSTANCE hInstance, int nCmdShow);
+    WindowUserInterface();
     virtual void start() const override;
     virtual void showStart() override;
 };

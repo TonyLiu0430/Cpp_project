@@ -1,1 +1,1 @@
-g++ -I include src/*.cpp -finput-charset=UTF-8 -fexec-charset=BIG-5 -std=gnu++17 -lgdi32 -o main
+g++ -I include src/*.cpp -finput-charset=UTF-8 -fexec-charset=BIG-5 -std=gnu++17 -DAWG -lgdi32 -o main

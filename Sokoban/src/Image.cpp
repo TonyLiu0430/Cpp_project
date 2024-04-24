@@ -1,10 +1,10 @@
-#ifdef _WIN32
-#include "ImageShower.h"
+#ifdef AWG
+#include "Image.h"
 #include "util.h"
 #include <bits/stdc++.h>
 using namespace std;
 
-Image::Image(string path, int length, int width): path(path), length(length), width(width) {}
+Image::Image(string name, int length, int width): name(name), length(length), width(width), path("resource\\" + name + ".bmp") {}
 
 static bool ___________init_temp_______________ = Image::loadAllImage();
 
@@ -20,7 +20,7 @@ shared_ptr<Image> Image::getImage(std::string name) {
     return allImage[name];
 }
 
-Point::Point(int x, int y): x(x), y(y) {}
+
 
 void ImageShower::show(HDC hdc) {
     for(auto &[image, point]: images) {
@@ -43,6 +43,13 @@ void ImageShower::insertImage(shared_ptr<Image> image, const Point &p) {
 
 void ImageShower::refreshInstant(HWND hWnd) {
     RedrawWindow(hWnd, nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
+}
+
+ButtonLike::ButtonLike(std::string name, std::function<void(void)> action): action(action) {
+    before = Image::getImage(name + "_before");
+    after = Image::getImage(name + "_after");
+    length = before->length;
+    width = before->width;
 }
 
 #endif

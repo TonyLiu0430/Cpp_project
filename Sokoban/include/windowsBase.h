@@ -1,5 +1,5 @@
 #pragma once
-#ifdef _WIN32
+#ifdef AWG
 
 #ifdef UNICODE
 #undef UNICODE
@@ -13,37 +13,60 @@
 #include <functional>
 #include <exception>
 #include <map>
+#include "util.h"
 
-//LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+class ButtonLike;
 
-class MainWindow {
+class MainMudule {
 public:
-    const HINSTANCE hInstance;
-    const int nCmdShow;
-    WNDCLASS windowData = {};
-    HWND hWnd;
-    std::string windowName;
-
-    MainWindow(HINSTANCE hInstance, int nCmdShow, std::string name = "CLASS_NAME");
-    void startMessageLoop() const;
-    
+    static HINSTANCE hInstance;
+    static int nCmdShow;
+    static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    static void startMessageLoop();
 };
 
 class Window {
-    const HWND hWnd;
-};
-
-/*All static*/
-class MainMessageHandler {
-public:
-    static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    static void registerMessageCB(UINT msg, std::function <void(WPARAM, LPARAM)> callBack);
-    static void registerMessageCB(UINT msg, std::function <void()> callBack);
-    static bool handleMessage(UINT msg, WPARAM wParam, LPARAM lParam); /*1 success 0 no MessageCB*/
+protected:
+    HWND hWnd;
+    inline static std::map<HWND, Window* > hWndObjs{};
+    Window(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,int nWidth,int nHeight,HWND hWndParent,HMENU hMenu,HINSTANCE hInstance,LPVOID lpParam);
+    virtual ~Window();
     inline static std::map<UINT, std::function <void(WPARAM, LPARAM)>> messageCBs{};
     inline static std::map<UINT, std::function <void()>> messageCBs_noArgs{};
+    bool handleMessage(UINT msg, WPARAM wParam, LPARAM lParam); /*1 success 0 no MessageCB*/
+    LRESULT process(UINT uMsg, WPARAM wParam, LPARAM lParam);
+    friend class MainMudule;
+    std::map<UINT, std::function <void(WPARAM, LPARAM)>> messageCBs{};
+    std::map<UINT, std::function <void()>> messageCBs_noArgs{};
+public:
+    /*create*/
+    static Window* create(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,int nWidth,int nHeight,HWND hWndParent,HMENU hMenu,HINSTANCE hInstance,LPVOID lpParam);
+    static void createMain(string name);
+    /*create*/
+    static void remove(Window *window);
+    static Window* getWindow(HWND hWnd);
+    HWND getHWnd();
+    void registerMessageCB(UINT msg, std::function <void(WPARAM, LPARAM)> callBack);
+    void registerMessageCB(UINT msg, std::function <void()> callBack);
+    class KeyboardProcesser {
+        std::map<WPARAM, std::function<void()>> keyCBs;
+    public:
+        void insertEvent(WPARAM vk_code, std::function<void()> callBack);
+        void removeEvent(WPARAM vk_code);
+        bool process(UINT uMsg, WPARAM wParam, LPARAM lParam);
+    }keyboardProcesser;
+    /////////////////////////////////////
+    class MouseProcesser {
+        std::vector<std::pair<Area, std::function<void()>>> areaCBs;
+    public:
+        void insertEvent(const Area &area, std::function<void()> callBack);
+        void removeEvent(const Area &area);
+        bool process(UINT uMsg, WPARAM wParam, LPARAM lParam);
+    }mouseProcesser;
+    void insertButtonLike(const ButtonLike &button, Point);
 };
 
+inline Window *mainWindow = nullptr;
 
 
-#endif /*_WIN32*/
+#endif /*AWG*/

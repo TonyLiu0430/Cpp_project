@@ -9,7 +9,8 @@
                 "_DEBUG",
                 //"UNICODE",
                 //"_UNICODE",
-                "ASCII"
+                "ASCII",
+                "AWG" /*active window game*/
             ],
             "windowsSdkVersion": "10.0.18362.0",
             "compilerPath": "C:/TDM-GCC-64/bin/g++.exe",

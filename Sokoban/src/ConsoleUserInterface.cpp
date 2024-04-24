@@ -1,7 +1,7 @@
 #include "ConsoleUserInterface.h"
 
 #include <bits/stdc++.h>
-#ifdef _WIN32
+#ifdef AWG
 #include <conio.h>
 #endif
 using namespace std;

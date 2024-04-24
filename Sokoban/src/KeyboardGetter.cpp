@@ -1,6 +1,6 @@
 #include "KeyboardGetter.h"
 #include <bits/stdc++.h>
-#ifdef _WIN32
+#ifdef AWG
 #include <conio.h>
 #endif
 using namespace std;
@@ -28,7 +28,7 @@ void KeyboardGetter::get() {
     printer.print();
     while(true) {
         char input;
-        #ifdef _WIN32
+        #ifdef AWG
         input = getch();
         #else
         input = getchar();

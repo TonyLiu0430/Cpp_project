@@ -1,4 +1,4 @@
-#ifdef _WIN32
+#ifdef AWG
 #pragma once
 #include "windowsBase.h"
 
