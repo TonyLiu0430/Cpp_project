@@ -57,12 +57,18 @@ public:
     }keyboardProcesser;
     /////////////////////////////////////
     class MouseProcesser {
-        std::vector<std::pair<Area, std::function<void()>>> moveCBs;
-        std::vector<std::pair<Area, std::function<void()>>> clickCBs;
+    private:
+        class EventHandler {
+            std::vector<std::pair<Area, std::function<void()>>> cBs;
+        public:
+            void insertEvent(Area, std::function<void()> cb);
+            void removeEvent(const Area &area);
+            void changeEvent(const Area &area, std::function<void()> callBack);
+            void process(int x, int y);
+            friend class MosueProcesser;
+        };
     public:
-        void insertMoveEvent(const Area &area, std::function<void()> callBack);
-        void insertClickEvent(const Area &area, std::function<void()> callBack);
-        void removeEvent(const Area &area);
+        EventHandler moveIn, moveOut, click;
         bool process(UINT uMsg, WPARAM wParam, LPARAM lParam);
     }mouseProcesser;
     void insertButtonLike(const ButtonLike &button, Point);

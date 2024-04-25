@@ -178,51 +178,64 @@ void Window::registerMessageCB(UINT msg, function<void()> callBack) {
 
 void Window::insertButtonLike(const ButtonLike &button, Point p) {
     Area area({p.x, p.y}, {button.length, button.width});
-    mouseProcesser.insertMoveEvent(area, []()
-                               { imageShower.changeImage(button.name, button.after); })
+    function<void()> before, after, action;
+    before = [&]() {
+        //imageShower.changeImage(button.name, button.after);
+        imageShower.removeImage(button.name + "_after");
+        imageShower.insertImage(button.after, {p.x, p.y});
+        mouseProcesser.moveOut.insertEvent(area, after);
+    };
+    after = [&]() {
+        imageShower.removeImage(button.name + "_before");
+        imageShower.insertImage(button.before, {p.x, p.y});
+        mouseProcesser.moveOut.insertEvent(area, before);
+        mouseProcesser.click.insertEvent(area, action);
+    };
+    action = [&]() {
+        if(button.tag == ButtonLike::ActionTag::once) {
+            mouseProcesser.moveOut.removeEvent(area);
+            mouseProcesser.moveIn.removeEvent(area);
+            mouseProcesser.click.removeEvent(area);
+        }
+        button.action();
+    };
+    mouseProcesser.moveIn.insertEvent(area, before);
 }
 
-void Window::KeyboardProcesser::insertEvent(WPARAM vk_code, std::function<void()> callBack) {
-    keyCBs[vk_code] = callBack;
+void Window::MouseProcesser::EventHandler::insertEvent(Area area, std::function<void()> cb) {
+    cBs.push_back({area, cb});
 }
 
-void Window::KeyboardProcesser::removeEvent(WPARAM vk_code) {
-    keyCBs.erase(vk_code);
-}
-
-bool Window::KeyboardProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    if( !inSet(uMsg, {WM_KEYDOWN}) ) {
-        return 0;
-    }
-    if( !inSet(wParam, keyCBs) ) {
-        return 0;
-    }
-    keyCBs[wParam]();
-}
-
-void Window::MouseProcesser::insertMoveEvent(const Area &area, std::function<void()> callBack) {
-    areaCBs.push_back({area, callBack});
-}
-
-void Window::MouseProcesser::removeEvent(const Area &area) {
-    for (int i = 0; i < areaCBs.size(); i++ ) {
-        if(areaCBs[i].first == area) {
-            areaCBs.erase(areaCBs.begin() + i);
+void Window::MouseProcesser::EventHandler::removeEvent(const Area &area) {
+    for (auto it = cBs.begin(); it != cBs.end(); it++) {
+        if (it->first == area) {
+            cBs.erase(it);
             return;
         }
     }
 }
 
-bool Window::MouseProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    if( !inSet(uMsg, {WM_MOUSEMOVE}) ) {
-        return 0;
-    }
-    int xPos = GET_X_LPARAM(lParam); 
-    int yPos = GET_Y_LPARAM(lParam); 
-    for(auto &[area, cb] : areaCBs) {
-        if(area.has(xPos, yPos)) {
+void Window::MouseProcesser::EventHandler::changeEvent(const Area &area, std::function<void()> callBack) {
+    removeEvent(area);
+    insertEvent({area, callBack});
+}
+
+void Window::MouseProcesser::EventHandler::process(int x, int y) {
+    for(auto &[area, cb] : cBs) {
+        if(area.has(x, y)) {
             cb();
         }
     }
+}
+
+bool Window::MouseProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    if( !inSet(uMsg, {WM_MOUSEMOVE, WM_RBUTTONUP}) ) {
+        return 0;
+    }
+    int xPos = GET_X_LPARAM(lParam); 
+    int yPos = GET_Y_LPARAM(lParam);
+    moveIn.process(xPos, yPos);
+    moveOut.process(xPos, yPos);
+    click.process(xPos, yPos);
 }
 #endif

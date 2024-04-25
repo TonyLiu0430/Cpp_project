@@ -28,7 +28,12 @@ public:
     std::shared_ptr<Image> after;
     std::function<void(void)> action;
     const std::string name;
-    ButtonLike(std::string name, std::function<void(void)> action);
+    enum class ActionTag {
+        once,
+        repeat
+    };
+    ActionTag tag;
+    ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag = ActionTag::once);
 };
 
 
@@ -40,10 +45,11 @@ public:
     void show(HDC hdc);
     void clear();
     void insertImage(std::shared_ptr<Image> image, const Point &p);
+    void removeImage(std::string name);
     void changeImage(std::string name, std::shared_ptr<Image> image);
     void refreshInstant(HWND hWnd);
 };
 
-inline ImageShower imageShower;
+//inline ImageShower imageShower;
 
 #endif

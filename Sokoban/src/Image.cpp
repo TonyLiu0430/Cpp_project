@@ -23,7 +23,8 @@ shared_ptr<Image> Image::getImage(std::string name) {
 
 
 void ImageShower::show(HDC hdc) {
-    for(auto &[image, point]: images) {
+    for(auto &[name, imgA]: images) {
+        auto &[image, point] = imgA;
         HDC mdc = CreateCompatibleDC(hdc);
         LPCSTR imagePath = image->path.c_str();
         HBITMAP bg = (HBITMAP)LoadImage(NULL, imagePath, IMAGE_BITMAP, image->length, image->width, LR_LOADFROMFILE);
@@ -38,14 +39,14 @@ void ImageShower::clear() {
 }
 
 void ImageShower::insertImage(shared_ptr<Image> image, const Point &p) {
-    images.push_back({image, p});
+    images[image->name] = {image, p};
 }
 
 void ImageShower::refreshInstant(HWND hWnd) {
     RedrawWindow(hWnd, nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
 }
 
-ButtonLike::ButtonLike(std::string name, std::function<void(void)> action): name(name), action(action) {
+ButtonLike::ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag): name(name), action(action), tag(tag) {
     before = Image::getImage(name + "_before");
     after = Image::getImage(name + "_after");
     length = before->length;
