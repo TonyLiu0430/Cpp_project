@@ -5,24 +5,7 @@
 using namespace std;
 
 Image::Image(string name, int length, int width): name(name), length(length), width(width), path("resource\\" + name + ".bmp") {}
-/*
-static bool ___________init_temp_______________ = Image::loadAllImage();
 
-bool Image::loadAllImage() {
-    //allImage.insert({"man", make_shared<Image>("man"s, 70, 70)});
-    allImage.emplace("man", new Image("man"s, 70, 70));
-    allImage.emplace("start_before", new Image("start_before"s, 300, 150));
-    allImage.emplace("start_after", new Image("start_after"s, 300, 150));
-    return true;
-}
-
-Image* Image::getImage(std::string name) {
-    if(allImage.find(name) == allImage.end()) {
-        throw Exception(name + " Image didn't initiallize OR not found");
-    }
-    return allImage[name];
-}
-*/
 ImageManager::ImageManager() {
     images.emplace("man", new Image("man"s, 70, 70));
     images.emplace("start_before", new Image("start_before"s, 300, 150));
