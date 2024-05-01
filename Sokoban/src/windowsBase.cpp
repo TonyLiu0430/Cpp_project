@@ -246,9 +246,6 @@ void Window::MouseProcesser::EventHandler::process(int x, int y) {
 }
 
 bool Window::MouseProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    if( !inSet(uMsg, {WM_MOUSEMOVE, WM_LBUTTONUP}) ) {
-        return 0;
-    }
     int xPos = GET_X_LPARAM(lParam); 
     int yPos = GET_Y_LPARAM(lParam);
     if(uMsg == WM_MOUSEMOVE) {
@@ -260,7 +257,7 @@ bool Window::MouseProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         click.process(xPos, yPos);
         return 1;
     }
-    return 1;
+    return 0;
 }
 
 void Window::KeyboardProcesser::insertEvent(WPARAM vk_code, std::function<void()> callBack) {

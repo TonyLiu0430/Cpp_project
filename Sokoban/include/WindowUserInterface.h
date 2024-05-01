@@ -7,7 +7,7 @@
 
 class WindowUserInterface: public UserInterface<WindowUserInterface> {
 public:
-    WindowUserInterface();
+    //WindowUserInterface();
     void init();
     void start();
     void showStart();
