@@ -1,7 +1,7 @@
 #include "windowsBase.h"
 #include "WindowUserInterface.h"
 #include "ConsoleUserInterface.h"
-#include "Game.hpp"
+#include "Game.h"
 #include <bits/stdc++.h>
 using namespace std;
 
