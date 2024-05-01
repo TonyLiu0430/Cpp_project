@@ -217,7 +217,7 @@ void Window::MouseProcesser::EventHandler::removeEvent(const Area &area) {
 
 void Window::MouseProcesser::EventHandler::changeEvent(const Area &area, std::function<void()> callBack) {
     removeEvent(area);
-    insertEvent({area, callBack});
+    insertEvent(area, callBack);
 }
 
 void Window::MouseProcesser::EventHandler::process(int x, int y) {
@@ -237,5 +237,24 @@ bool Window::MouseProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     moveIn.process(xPos, yPos);
     moveOut.process(xPos, yPos);
     click.process(xPos, yPos);
+}
+
+void Window::KeyboardProcesser::insertEvent(WPARAM vk_code, std::function<void()> callBack) {
+    keyCBs[vk_code] = callBack;
+}
+
+void Window::KeyboardProcesser::removeEvent(WPARAM vk_code) {
+    keyCBs.erase(vk_code);
+}
+
+bool Window::KeyboardProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    if(uMsg != WM_KEYDOWN) {
+        return 0;
+    }
+    if(keyCBs.find(wParam) != keyCBs.end()) {
+        keyCBs[wParam]();
+        return 1;
+    }
+    return 0;
 }
 #endif

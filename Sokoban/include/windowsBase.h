@@ -31,8 +31,8 @@ protected:
     inline static std::map<HWND, Window* > hWndObjs{};
     Window(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,int nWidth,int nHeight,HWND hWndParent,HMENU hMenu,HINSTANCE hInstance,LPVOID lpParam);
     virtual ~Window();
-    inline static std::map<UINT, std::function <void(WPARAM, LPARAM)>> messageCBs{};
-    inline static std::map<UINT, std::function <void()>> messageCBs_noArgs{};
+    std::map<UINT, std::function <void(WPARAM, LPARAM)>> messageCBs;
+    std::map<UINT, std::function <void()>> messageCBs_noArgs;
     bool handleMessage(UINT msg, WPARAM wParam, LPARAM lParam); /*1 success 0 no MessageCB*/
     LRESULT process(UINT uMsg, WPARAM wParam, LPARAM lParam);
     friend class MainMudule;
@@ -65,6 +65,7 @@ public:
             void removeEvent(const Area &area);
             void changeEvent(const Area &area, std::function<void()> callBack);
             void process(int x, int y);
+            const function<bool(int, int)> judge = bind(&Area::isIn, placeholders::_1, placeholders::_2);
             friend class MosueProcesser;
         };
     public:

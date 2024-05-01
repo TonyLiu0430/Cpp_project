@@ -22,6 +22,10 @@ bool Area::operator==(const Area &other) const {
     return x == other.x && y == other.y && length == other.length && width == other.width;
 }
 
-bool Area::has(int px, int py) {
+bool Area::isIn(int px, int py) {
     return x <= px && px <= x + length && y <= py && py <= y + width;
+}
+
+bool isOut(int px, int py) {
+    return !isIn(px, py);
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <exception>
 #include <string>
+#include <set>
 
 class Exception: public std::exception {
     const std::string message;
@@ -18,13 +19,19 @@ struct Point {
 struct Area {
     int x, y, length, width;
     Area(int x, int y, int length, int width);
-    Area(const pair<int, int> &coordinate, const pair<int, int> &size);
-    bool has(int x, int y);
+    Area(const std::pair<int, int> &coordinate, const std::pair<int, int> &size);
+    bool isIn(int x, int y);
+    bool isOut(int x, int y);
     bool operator==(const Area &other) const;
 };
 
-template<class T, class U = T>
+template<class T, class U>
 bool inSet(const T &a, const std::set<U> &s) {
+    return s.find(a) != s.end();
+}
+
+template<class T>
+bool inSet(const T &a, const std::set<T> &s) {
     return s.find(a) != s.end();
 }
 

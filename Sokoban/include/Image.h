@@ -50,6 +50,6 @@ public:
     void refreshInstant(HWND hWnd);
 };
 
-//inline ImageShower imageShower;
+inline ImageShower imageShower;
 
 #endif
