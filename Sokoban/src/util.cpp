@@ -26,6 +26,6 @@ bool Area::isIn(int px, int py) {
     return x <= px && px <= x + length && y <= py && py <= y + width;
 }
 
-bool isOut(int px, int py) {
+bool Area::isOut(int px, int py) {
     return !isIn(px, py);
 }

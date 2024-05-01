@@ -17,12 +17,14 @@
 
 class ButtonLike;
 
-class MainMudule {
+class MainProgram {
+    inline static bool isRunning = true;
 public:
-    static HINSTANCE hInstance;
-    static int nCmdShow;
+    inline static HINSTANCE hInstance{};
+    inline static int nCmdShow{};
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     static void startMessageLoop();
+    static void stopMessageLoop();
 };
 
 class Window {
@@ -35,19 +37,18 @@ protected:
     std::map<UINT, std::function <void()>> messageCBs_noArgs;
     bool handleMessage(UINT msg, WPARAM wParam, LPARAM lParam); /*1 success 0 no MessageCB*/
     LRESULT process(UINT uMsg, WPARAM wParam, LPARAM lParam);
-    friend class MainMudule;
-    std::map<UINT, std::function <void(WPARAM, LPARAM)>> messageCBs{};
-    std::map<UINT, std::function <void()>> messageCBs_noArgs{};
+    friend class MainProgram;
 public:
     /*create*/
     static Window* create(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,int nWidth,int nHeight,HWND hWndParent,HMENU hMenu,HINSTANCE hInstance,LPVOID lpParam);
-    static void createMain(string name);
+    static void createMain(std::string name);
     /*create*/
     static void remove(Window *window);
     static Window* getWindow(HWND hWnd);
     HWND getHWnd();
     void registerMessageCB(UINT msg, std::function <void(WPARAM, LPARAM)> callBack);
     void registerMessageCB(UINT msg, std::function <void()> callBack);
+    
     class KeyboardProcesser {
         std::map<WPARAM, std::function<void()>> keyCBs;
     public:
@@ -65,11 +66,12 @@ public:
             void removeEvent(const Area &area);
             void changeEvent(const Area &area, std::function<void()> callBack);
             void process(int x, int y);
-            const function<bool(int, int)> judge = bind(&Area::isIn, placeholders::_1, placeholders::_2);
+            const std::function<bool(Area&, int, int)> trigger;
+            EventHandler(std::function<bool(Area&, int, int)> trigger = std::bind(&Area::isIn, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)): trigger(trigger) {}
             friend class MosueProcesser;
         };
     public:
-        EventHandler moveIn, moveOut, click;
+        EventHandler click, moveIn, moveOut{std::bind(&Area::isOut, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)};
         bool process(UINT uMsg, WPARAM wParam, LPARAM lParam);
     }mouseProcesser;
     void insertButtonLike(const ButtonLike &button, Point);

@@ -11,12 +11,14 @@ WindowUserInterface::WindowUserInterface() {
 
 void WindowUserInterface::start() const {
     ButtonLike start("start", []()
-                     { cout << "press button\n"; });
-    mainWindow->insertButtonLike(start, {100, 100});
+                     { cout << "press button\n";
+                       MainProgram::stopMessageLoop(); });
+    mainWindow->insertButtonLike(start, {500, 300});
+    MainProgram::startMessageLoop();
 }
 
 void WindowUserInterface::showStart() {
-
+    
 }
 
 

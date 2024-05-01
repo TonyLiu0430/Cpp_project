@@ -9,11 +9,14 @@ Image::Image(string name, int length, int width): name(name), length(length), wi
 static bool ___________init_temp_______________ = Image::loadAllImage();
 
 bool Image::loadAllImage() {
-    allImage.emplace("man", make_shared<Image>("resource\\man.bmp", 70, 70));
+    //allImage.insert({"man", make_shared<Image>("man"s, 70, 70)});
+    allImage.emplace("man", new Image("man"s, 70, 70));
+    allImage.emplace("start_before", new Image("start_before"s, 300, 150));
+    allImage.emplace("start_after", new Image("start_after"s, 300, 150));
     return true;
 }
 
-shared_ptr<Image> Image::getImage(std::string name) {
+Image* Image::getImage(std::string name) {
     if(allImage.find(name) == allImage.end()) {
         throw Exception(name + " Image didn't initiallize OR not found");
     }
@@ -38,12 +41,30 @@ void ImageShower::clear() {
     images.clear();
 }
 
-void ImageShower::insertImage(shared_ptr<Image> image, const Point &p) {
+int ImageShower::insertImage(Image* image, const Point &p) {
     images[image->name] = {image, p};
+    return 1;
 }
+
+int ImageShower::removeImage(std::string name) {
+    if(images.find(name) != images.end()) {
+        cout << "remove " << name << endl;
+        images.erase(name);
+        return 1;
+    }
+    return 0;
+}
+
 
 void ImageShower::refreshInstant(HWND hWnd) {
     RedrawWindow(hWnd, nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
+}
+
+void ImageShower::refreshArea(HWND hWnd, const Area &area) {
+    RECT rect = {(LONG)area.x, (LONG)area.y, (LONG)area.x + area.length, (LONG)area.y + area.width};
+    cout << "refresh " << area.x << " " << area.y << " " << area.length << " " << area.width << endl;
+    InvalidateRect(hWnd, &rect, true);
+    UpdateWindow(hWnd);
 }
 
 ButtonLike::ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag): name(name), action(action), tag(tag) {

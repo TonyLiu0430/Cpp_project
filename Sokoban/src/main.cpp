@@ -11,8 +11,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 int main() {
 #endif
     #ifdef AWG
-    MainMudule::hInstance = hInstance;
-    MainMudule::nCmdShow = nCmdShow;
+    MainProgram::hInstance = hInstance;
+    MainProgram::nCmdShow = nCmdShow;
     #endif
     int mode = 0;
     #ifdef AWG

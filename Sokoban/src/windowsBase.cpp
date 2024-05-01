@@ -8,11 +8,13 @@ using std::cout;
 
 using namespace std;
 
-void MainMudule::startMessageLoop(){
+
+void MainProgram::startMessageLoop(){
     // Run the message loop.
     /*  消息迴圈  */
+    cout << "start message loop\n";
     MSG msg = {};
-    while (GetMessage(&msg, NULL, 0, 0) > 0)
+    while (GetMessage(&msg, NULL, 0, 0) > 0 && isRunning)
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -20,9 +22,18 @@ void MainMudule::startMessageLoop(){
     /*  消息迴圈  */
 }
 
+void MainProgram::stopMessageLoop() {
+    isRunning = false;
+}
+
 /*訊息處裡函式*/
-LRESULT MainMudule::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT MainProgram::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    //cout << hwnd << " " << uMsg << " " << wParam << " " << lParam << endl;
+    if(mainWindow == nullptr) {
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
     return Window::getWindow(hwnd)->process(uMsg, wParam, lParam);
+    //return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 Window::Window(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,int nWidth,int nHeight,HWND hWndParent,HMENU hMenu,HINSTANCE hInstance,LPVOID lpParam) {
@@ -43,7 +54,7 @@ Window::Window(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD d
     if(hWnd == NULL) {
         throw Exception("window create error");
     }
-    hWndObjs[hWnd] = this;
+    //hWndObjs[hWnd] = this;
 }
 
 Window* Window::getWindow(HWND hWnd) {
@@ -58,7 +69,7 @@ HWND Window::getHWnd() {
 }
 
 Window* Window::create(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,int nWidth,int nHeight,HWND hWndParent,HMENU hMenu,HINSTANCE hInstance,LPVOID lpParam) {
-    return new Window(
+    Window *res = new Window(
         dwExStyle,
         lpClassName,
         lpWindowName,
@@ -72,12 +83,14 @@ Window* Window::create(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName,
         hInstance,
         lpParam
     );
+    hWndObjs[res->hWnd] = res;
+    return res;
 }
 
-void Window::createMain(string name) {
+void Window::createMain(std::string name) {
     WNDCLASS windowData = {};
-    windowData.lpfnWndProc   = MainMudule::WindowProc;
-    windowData.hInstance     = MainMudule::hInstance;
+    windowData.lpfnWndProc   = MainProgram::WindowProc;
+    windowData.hInstance     = MainProgram::hInstance;
     windowData.lpszClassName = name.c_str();
 
     RegisterClass(&windowData);
@@ -95,11 +108,13 @@ void Window::createMain(string name) {
 
         NULL,       // Parent window    
         NULL,       // Menu
-        MainMudule::hInstance,  // Instance handle
+        MainProgram::hInstance,  // Instance handle
         NULL        // Additional application data
         );
 
-    ShowWindow(mainWindow->getHWnd(), MainMudule::nCmdShow);
+    cout << "Main window hWnd" << mainWindow->getHWnd() << endl;
+
+    ShowWindow(mainWindow->getHWnd(), MainProgram::nCmdShow);
 }
 
 void Window::remove(Window* window) {
@@ -142,7 +157,7 @@ LRESULT Window::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
             /**********PRINT****************/
             /**********PRINT****************/
             EndPaint(hWnd, &ps);
-            cout << "print\n";
+            //cout << "print\n";
         }
         return 0;
 
@@ -178,31 +193,33 @@ void Window::registerMessageCB(UINT msg, function<void()> callBack) {
 
 void Window::insertButtonLike(const ButtonLike &button, Point p) {
     Area area({p.x, p.y}, {button.length, button.width});
-    function<void()> before, after, action;
-    before = [&]() {
-        //imageShower.changeImage(button.name, button.after);
-        imageShower.removeImage(button.name + "_after");
-        imageShower.insertImage(button.after, {p.x, p.y});
-        mouseProcesser.moveOut.insertEvent(area, after);
-    };
-    after = [&]() {
-        imageShower.removeImage(button.name + "_before");
-        imageShower.insertImage(button.before, {p.x, p.y});
-        mouseProcesser.moveOut.insertEvent(area, before);
-        mouseProcesser.click.insertEvent(area, action);
-    };
-    action = [&]() {
+    mouseProcesser.moveIn.insertEvent(area, [=]() {
+        if(imageShower.removeImage(button.name + "_before")) {
+            imageShower.insertImage(button.after, {p.x, p.y});
+            imageShower.refreshArea(hWnd, area);
+        }
+    });
+    mouseProcesser.moveOut.insertEvent(area, [=]() {
+        if(imageShower.removeImage(button.name + "_after")) {
+            imageShower.insertImage(button.before, {p.x, p.y});
+            imageShower.refreshArea(hWnd, area);
+        }
+    });
+    mouseProcesser.click.insertEvent(area, [=]() {
         if(button.tag == ButtonLike::ActionTag::once) {
             mouseProcesser.moveOut.removeEvent(area);
             mouseProcesser.moveIn.removeEvent(area);
             mouseProcesser.click.removeEvent(area);
         }
         button.action();
-    };
-    mouseProcesser.moveIn.insertEvent(area, before);
+        imageShower.refreshArea(hWnd, area);
+    });
+    imageShower.insertImage(button.before, {p.x, p.y});
+    imageShower.refreshArea(hWnd, area);
 }
 
 void Window::MouseProcesser::EventHandler::insertEvent(Area area, std::function<void()> cb) {
+    cout << "insert Mouse Event\n";
     cBs.push_back({area, cb});
 }
 
@@ -222,21 +239,28 @@ void Window::MouseProcesser::EventHandler::changeEvent(const Area &area, std::fu
 
 void Window::MouseProcesser::EventHandler::process(int x, int y) {
     for(auto &[area, cb] : cBs) {
-        if(area.has(x, y)) {
+        if(trigger(area, x, y)) {
             cb();
         }
     }
 }
 
 bool Window::MouseProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    if( !inSet(uMsg, {WM_MOUSEMOVE, WM_RBUTTONUP}) ) {
+    if( !inSet(uMsg, {WM_MOUSEMOVE, WM_LBUTTONUP}) ) {
         return 0;
     }
     int xPos = GET_X_LPARAM(lParam); 
     int yPos = GET_Y_LPARAM(lParam);
-    moveIn.process(xPos, yPos);
-    moveOut.process(xPos, yPos);
-    click.process(xPos, yPos);
+    if(uMsg == WM_MOUSEMOVE) {
+        moveIn.process(xPos, yPos);
+        moveOut.process(xPos, yPos);
+        return 1;
+    }
+    if(uMsg == WM_LBUTTONUP) {
+        click.process(xPos, yPos);
+        return 1;
+    }
+    return 1;
 }
 
 void Window::KeyboardProcesser::insertEvent(WPARAM vk_code, std::function<void()> callBack) {
@@ -255,6 +279,6 @@ bool Window::KeyboardProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam)
         keyCBs[wParam]();
         return 1;
     }
-    return 0;
+    return 1;
 }
 #endif
