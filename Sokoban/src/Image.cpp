@@ -5,7 +5,7 @@
 using namespace std;
 
 Image::Image(string name, int length, int width): name(name), length(length), width(width), path("resource\\" + name + ".bmp") {}
-
+/*
 static bool ___________init_temp_______________ = Image::loadAllImage();
 
 bool Image::loadAllImage() {
@@ -22,7 +22,25 @@ Image* Image::getImage(std::string name) {
     }
     return allImage[name];
 }
+*/
+ImageManager::ImageManager() {
+    images.emplace("man", new Image("man"s, 70, 70));
+    images.emplace("start_before", new Image("start_before"s, 300, 150));
+    images.emplace("start_after", new Image("start_after"s, 300, 150));
+}
 
+ImageManager::~ImageManager() {
+    for(auto &[name, image]: images) {
+        delete image;
+    }
+}
+
+Image* ImageManager::getImage(std::string name) {
+    if(images.find(name) == images.end()) {
+        throw Exception(name + " Image didn't initiallize OR not found");
+    }
+    return images[name];
+}
 
 
 void ImageShower::show(HDC hdc) {
@@ -68,8 +86,8 @@ void ImageShower::refreshArea(HWND hWnd, const Area &area) {
 }
 
 ButtonLike::ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag): name(name), action(action), tag(tag) {
-    before = Image::getImage(name + "_before");
-    after = Image::getImage(name + "_after");
+    before = imageManager.getImage(name + "_before");
+    after = imageManager.getImage(name + "_after");
     length = before->length;
     width = before->width;
 }

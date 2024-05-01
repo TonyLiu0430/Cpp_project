@@ -10,19 +10,28 @@
 
 class Image {
     //inline static std::map<std::string, std::shared_ptr<Image>> allImage{};
-    inline static std::map<std::string, Image*> allImage{};
-public:
+    //inline static std::map<std::string, Image*> allImage{};
     Image(std::string name, int length, int width);
-    Image(const Image&) = default;
-    Image() = default;
-    static bool loadAllImage();
+    friend class ImageManager;
+public:
+    //static bool loadAllImage();
     const std::string path;
     const std::string name;
     const int length;
     const int width;
     //static std::shared_ptr<Image> getImage(std::string name);
-    static Image* getImage(std::string name);
+    //static Image* getImage(std::string name);
 };
+
+class ImageManager {
+    std::map<std::string, Image*> images;
+public:
+    Image* getImage(std::string name);
+    ImageManager();
+    ~ImageManager();
+};
+
+inline ImageManager imageManager;
 
 class ButtonLike {
 public:
