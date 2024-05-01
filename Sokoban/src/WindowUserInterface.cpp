@@ -4,12 +4,19 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/*
 WindowUserInterface::WindowUserInterface() {
+    cout << "Window UserInterface start" << endl;
+    Window::createMain("SOKOBAN");
+}*/
+
+void WindowUserInterface::init() {
+    cout << "Window UserInterface start" << endl;
     Window::createMain("SOKOBAN");
 }
 
 
-void WindowUserInterface::start() const {
+void WindowUserInterface::start() {
     ButtonLike start("start", []()
                      { cout << "press button\n";
                        MainProgram::stopMessageLoop(); });

@@ -6,7 +6,11 @@
 #endif
 using namespace std;
 
-void ConsoleUserInterface::start() const {
+void ConsoleUserInterface::init() {
+    /**/
+}
+
+void ConsoleUserInterface::start() {
     cout << "Console UserInterface start" << endl;
     _getch();
 }

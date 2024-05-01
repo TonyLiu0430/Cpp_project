@@ -1,7 +1,7 @@
 #include "windowsBase.h"
 #include "WindowUserInterface.h"
 #include "ConsoleUserInterface.h"
-#include "Game.h"
+#include "Game.hpp"
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -20,16 +20,15 @@ int main() {
     cout << "按下 1 以視窗應用程式介面開啟遊戲" << endl;
     cin >> mode;
     #endif
-    unique_ptr<UserInterface> ui;
     if(mode == 0) {
-        ui = make_unique<ConsoleUserInterface>();
+        Game<ConsoleUserInterface> game;
+        game.start();
     }
     #ifdef AWG
     else {
-        ui = make_unique<WindowUserInterface>();
+        Game<WindowUserInterface> game;
+        game.start();
     }
     #endif
-    Game game(ui);
-    game.start();
     return 0;
 }

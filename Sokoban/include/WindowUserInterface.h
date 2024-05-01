@@ -1,17 +1,16 @@
 #pragma once
 #ifdef AWG
 
-#include "UserInterface.h"
+#include "UserInterface.hpp"
 #include "windowsBase.h"
 
 
-
-
-class WindowUserInterface: public UserInterface {
+class WindowUserInterface: public UserInterface<WindowUserInterface> {
 public:
     WindowUserInterface();
-    virtual void start() const override;
-    virtual void showStart() override;
+    void init();
+    void start();
+    void showStart();
 };
 
 #endif

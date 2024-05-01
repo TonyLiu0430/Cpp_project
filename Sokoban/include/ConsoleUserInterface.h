@@ -1,8 +1,9 @@
 #pragma once
-#include "UserInterface.h"
+#include "UserInterface.hpp"
 
-class ConsoleUserInterface: public UserInterface {
+class ConsoleUserInterface: public UserInterface<ConsoleUserInterface> {
 public:
-    virtual void start() const override;
-    virtual void showStart() override;
+    void init();
+    void start();
+    void showStart();
 };
