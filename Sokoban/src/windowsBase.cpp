@@ -1,9 +1,11 @@
 #ifdef AWG
 #include "windowsBase.h"
-#include <windowsx.h>
 #include <bits/stdc++.h>
 #include "util.h"
 #include "Image.h"
+
+#define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
+#define GET_Y_LPARAM(lp) ((int)(short)HIWORD(lp))
 using std::cout;
 
 using namespace std;
@@ -210,9 +212,12 @@ void Window::insertButtonLike(const ButtonLike &button, Point p) {
             mouseProcesser.moveOut.removeEvent(area);
             mouseProcesser.moveIn.removeEvent(area);
             mouseProcesser.click.removeEvent(area);
+            if(imageShower.removeImage(button.name + "_before") | imageShower.removeImage(button.name + "_after")) {
+                imageShower.refreshArea(hWnd, area);
+            }
         }
         button.action();
-        imageShower.refreshArea(hWnd, area);
+        //imageShower.refreshArea(hWnd, area);
     });
     imageShower.insertImage(button.before, {p.x, p.y});
     imageShower.refreshArea(hWnd, area);
