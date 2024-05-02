@@ -6,4 +6,9 @@ public:
     void init();
     void start();
     void showStart();
+
+    class GameObj_base {
+    public:
+        char exterior;
+    };
 };

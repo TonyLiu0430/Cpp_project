@@ -13,9 +13,11 @@
 #include <functional>
 #include <exception>
 #include <map>
+#include "Image.h"
 #include "util.h"
 
 class ButtonLike;
+class Image;
 
 class MainProgram {
     inline static bool isRunning = true;
@@ -42,7 +44,6 @@ public:
     /*create*/
     static Window* create(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,int nWidth,int nHeight,HWND hWndParent,HMENU hMenu,HINSTANCE hInstance,LPVOID lpParam);
     static void createMain(std::string name);
-    /*create*/
     static void remove(Window *window);
     static Window* getWindow(HWND hWnd);
     HWND getHWnd();
@@ -56,7 +57,6 @@ public:
         void removeEvent(WPARAM vk_code);
         bool process(UINT uMsg, WPARAM wParam, LPARAM lParam);
     }keyboardProcesser;
-    /////////////////////////////////////
     class MouseProcesser {
     private:
         class EventHandler {
@@ -74,6 +74,20 @@ public:
         EventHandler click, moveIn, moveOut{std::bind(&Area::isOut, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)};
         bool process(UINT uMsg, WPARAM wParam, LPARAM lParam);
     }mouseProcesser;
+    class ImageShower {
+    public:
+        HWND &hWnd;
+        explicit ImageShower(HWND &hWnd): hWnd(hWnd) {};
+        ImageShower& operator=(const ImageShower&) = delete;
+        std::map<std::string, std::pair<Image*, Point>> images;
+        void show(HDC hdc);
+        void clear();
+        int insertImage(Image* image, const Point &p);
+        int removeImage(std::string name);
+        void refreshArea(const Area &area);
+        void refreshInstant();
+    };
+    ImageShower imageShower{hWnd};
     void insertButtonLike(const ButtonLike &button, Point);
 };
 

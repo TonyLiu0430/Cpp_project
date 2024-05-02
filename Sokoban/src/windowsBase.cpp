@@ -115,8 +115,6 @@ void Window::createMain(std::string name) {
         NULL        // Additional application data
         );
 
-    cout << "Main window hWnd" << mainWindow->getHWnd() << endl;
-
     ShowWindow(mainWindow->getHWnd(), MainProgram::nCmdShow);
 }
 
@@ -199,13 +197,13 @@ void Window::insertButtonLike(const ButtonLike &button, Point p) {
     mouseProcesser.moveIn.insertEvent(area, [=]() {
         if(imageShower.removeImage(button.name + "_before")) {
             imageShower.insertImage(button.after, {p.x, p.y});
-            imageShower.refreshArea(hWnd, area);
+            imageShower.refreshArea(area);
         }
     });
     mouseProcesser.moveOut.insertEvent(area, [=]() {
         if(imageShower.removeImage(button.name + "_after")) {
             imageShower.insertImage(button.before, {p.x, p.y});
-            imageShower.refreshArea(hWnd, area);
+            imageShower.refreshArea(area);
         }
     });
     mouseProcesser.click.insertEvent(area, [=]() {
@@ -214,14 +212,14 @@ void Window::insertButtonLike(const ButtonLike &button, Point p) {
             mouseProcesser.moveIn.removeEvent(area);
             mouseProcesser.click.removeEvent(area);
             if(imageShower.removeImage(button.name + "_before") | imageShower.removeImage(button.name + "_after")) {
-                imageShower.refreshArea(hWnd, area);
+                imageShower.refreshArea(area);
             }
         }
         button.action();
         //imageShower.refreshArea(hWnd, area);
     });
     imageShower.insertImage(button.before, {p.x, p.y});
-    imageShower.refreshArea(hWnd, area);
+    imageShower.refreshArea(area);
 }
 
 void Window::MouseProcesser::EventHandler::insertEvent(Area area, std::function<void()> cb) {
@@ -283,5 +281,46 @@ bool Window::KeyboardProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam)
         return 1;
     }
     return 1;
+}
+
+void Window::ImageShower::show(HDC hdc) {
+    for(auto &[name, imgA]: images) {
+        auto &[image, point] = imgA;
+        HDC mdc = CreateCompatibleDC(hdc);
+        LPCSTR imagePath = image->path.c_str();
+        HBITMAP bg = (HBITMAP)LoadImage(NULL, imagePath, IMAGE_BITMAP, image->length, image->width, LR_LOADFROMFILE);
+            
+        SelectObject(mdc,bg);
+        BitBlt(hdc, point.x, point.y, image->length, image->width, mdc, 0, 0, SRCAND);
+    }
+}
+
+void Window::ImageShower::clear() {
+    images.clear();
+}
+
+int Window::ImageShower::insertImage(Image* image, const Point &p) {
+    images[image->name] = {image, p};
+    return 1;
+}
+
+int Window::ImageShower::removeImage(std::string name) {
+    if(images.find(name) != images.end()) {
+        cout << "remove " << name << endl;
+        images.erase(name);
+        return 1;
+    }
+    return 0;
+}
+
+void Window::ImageShower::refreshInstant() {
+    RedrawWindow(hWnd, nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
+}
+
+void Window::ImageShower::refreshArea(const Area &area) {
+    RECT rect = {(LONG)area.x, (LONG)area.y, (LONG)area.x + area.length, (LONG)area.y + area.width};
+    cout << "refresh " << " hWnd " << hWnd << " " << area.x << " " << area.y << " " << area.length << " " << area.width << endl;
+    InvalidateRect(hWnd, &rect, true);
+    UpdateWindow(hWnd);
 }
 #endif

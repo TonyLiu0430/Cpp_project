@@ -1,10 +1,10 @@
 #pragma once
 #ifdef AWG
-#include "windowsBase.h"
 #include <string>
 #include <map>
 #include <utility>
 #include <memory>
+#include <functional>
 #include "util.h"
 
 
@@ -44,19 +44,5 @@ public:
     ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag = ActionTag::once);
 };
 
-
-
-class ImageShower {
-public:
-    std::map<std::string, std::pair<Image*, Point>> images;
-    void show(HDC hdc);
-    void clear();
-    int insertImage(Image* image, const Point &p);
-    int removeImage(std::string name);
-    void refreshArea(HWND hWnd, const Area &area);
-    void refreshInstant(HWND hWnd);
-};
-
-inline ImageShower imageShower;
 
 #endif

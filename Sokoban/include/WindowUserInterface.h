@@ -7,10 +7,14 @@
 
 class WindowUserInterface: public UserInterface<WindowUserInterface> {
 public:
-    //WindowUserInterface();
     void init();
     void start();
     void showStart();
+
+    class GameObj_base {
+    public:
+        Image* exterior;
+    };
 };
 
 #endif

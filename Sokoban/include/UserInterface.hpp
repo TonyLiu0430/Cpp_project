@@ -3,6 +3,7 @@
 template<class T>
 class UserInterface {
 public:
+    using UI = T;
     UserInterface() {
         static_cast<T*>(this)->init();
     }
