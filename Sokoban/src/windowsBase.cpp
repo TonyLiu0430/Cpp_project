@@ -94,6 +94,7 @@ void Window::createMain(std::string name) {
     windowData.lpfnWndProc   = MainProgram::WindowProc;
     windowData.hInstance     = MainProgram::hInstance;
     windowData.lpszClassName = name.c_str();
+    windowData.hCursor       = LoadCursor(NULL, IDC_ARROW);
 
     RegisterClass(&windowData);
 
