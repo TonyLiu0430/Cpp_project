@@ -14,6 +14,7 @@ using namespace std;
 void MainProgram::startMessageLoop(){
     // Run the message loop.
     /*  消息迴圈  */
+    isRunning = true;
     cout << "start message loop\n";
     MSG msg = {};
     while (isRunning && GetMessage(&msg, NULL, 0, 0) > 0)
@@ -300,6 +301,7 @@ void Window::ImageShower::clear() {
 }
 
 int Window::ImageShower::insertImage(Image* image, const Point &p) {
+    /*TODO改成用數字定位*/
     images[image->name] = {image, p};
     return 1;
 }
