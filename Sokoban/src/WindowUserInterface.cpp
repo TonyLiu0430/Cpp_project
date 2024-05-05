@@ -28,6 +28,14 @@ void WindowUserInterface::showStart() {
     
 }
 
+void WindowUserInterface::startMessageLoop() {
+    MainProgram::startMessageLoop();
+}
+
+void WindowUserInterface::stopMessageLoop() {
+    MainProgram::stopMessageLoop();
+}
+
 
 
 

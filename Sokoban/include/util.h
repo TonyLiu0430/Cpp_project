@@ -26,17 +26,5 @@ struct Area {
     bool operator==(const Area &other) const;
 };
 
-template<class T, class U>
-bool inSet(const T &a, const std::set<U> &s) {
-    return s.find(a) != s.end();
-}
 
-template<class T>
-bool inSet(const T &a, const std::set<T> &s) {
-    return s.find(a) != s.end();
-}
 
-template<class T, class U>
-bool inSet(const T &a, const U &s) {
-    return s.find(a) != s.end();
-}

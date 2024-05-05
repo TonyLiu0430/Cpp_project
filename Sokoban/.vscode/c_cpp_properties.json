@@ -18,7 +18,12 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-gcc-x64",
             "compilerArgs": [
-                "-O2"
+                "-O2",
+                "-lgdi32",
+                "-I ${workspaceFolder}/include",
+                "-finput-charset=UTF-8",
+                "-fexec-charset=BIG-5",
+                "src/*.cpp"
             ]
         }
     ],
