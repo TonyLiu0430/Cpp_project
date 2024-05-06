@@ -20,7 +20,7 @@ public:
     void showBoard_init(const std::vector<std::vector<GameObj>> &board);
     void showBoard(const std::vector<std::vector<GameObj>> &board);
     void end(){/*TODO*/};
-    void showWin(){std::cout << "win\n";/*TODO*/};
+    void showWin();
     void showLose(){/*TODO*/};
     void startMessageLoop();
     void stopMessageLoop();

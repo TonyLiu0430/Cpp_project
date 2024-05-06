@@ -40,14 +40,22 @@ void Image::resetInstances() {
 }
 
 ImageManager::ImageManager() {
+    /*start button image*/
     images.emplace("start_before", new Image("start_before"s, 300, 150));
     images.emplace("start_after", new Image("start_after"s, 300, 150));
-    images.emplace("player", new Image("player"s, 30, 30));
-    images.emplace("wall", new Image("wall"s, 30, 30));
-    images.emplace("road", new Image("road"s, 30, 30));
-    images.emplace("box", new Image("box"s, 30, 30));
-    images.emplace("checkPoint", new Image("checkPoint"s, 30, 30));
-    images.emplace("boxOnCheckPoint", new Image("boxOnCheckPoint"s, 30, 30));
+    /*start button image*/
+
+    /*Game Obj Image*/
+    images.emplace("player", new Image("player"s, Image::GameObjLen, Image::GameObjLen));
+    images.emplace("wall", new Image("wall"s, Image::GameObjLen, Image::GameObjLen));
+    images.emplace("road", new Image("road"s, Image::GameObjLen, Image::GameObjLen));
+    images.emplace("box", new Image("box"s, Image::GameObjLen, Image::GameObjLen));
+    images.emplace("checkPoint", new Image("checkPoint"s, Image::GameObjLen, Image::GameObjLen));
+    images.emplace("boxOnCheckPoint", new Image("boxOnCheckPoint"s, Image::GameObjLen, Image::GameObjLen));
+    /*Game Obj Image*/
+
+    /*Game status Image*/
+    images.emplace("win", new Image("win"s, 500, 300));
 }
 
 ImageManager::~ImageManager() {

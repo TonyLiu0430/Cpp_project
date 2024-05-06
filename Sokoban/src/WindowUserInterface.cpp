@@ -13,16 +13,14 @@ WindowUserInterface::WindowUserInterface() {
 void WindowUserInterface::init() {
     cout << "Window UserInterface start" << endl;
     Window::createMain("SOKOBAN");
-    //cerr << "1111";
 }
 
 
 void WindowUserInterface::showStart() {
-    ButtonLike start("start", []()
-                     { cout << "press button\n";
-                       MainProgram::stopMessageLoop(); });
+    ButtonLike start("start", [](){
+        MainProgram::stopMessageLoop();
+    });
     mainWindow->insertButtonLike(start, {500, 300});
-    //cerr << "1111";
     MainProgram::startMessageLoop();
 }
 
@@ -80,12 +78,12 @@ void WindowUserInterface::showBoard_init(const std::vector<std::vector<GameObj>>
             if(image == nullptr) {
                 throw Exception("Invalid GameObj Data");
             }
-            mainWindow->imageShower.insertImage(to_string(i) + to_string(j), image, {j * 30, i * 30});
-            //mainWindow->imageShower.refreshArea({j * 30, i * 30, 30, 30});
+            mainWindow->imageShower.insertImage(to_string(i) + to_string(j), image, {j * Image::GameObjLen, i * Image::GameObjLen});
+            mainWindow->imageShower.refreshArea({j * Image::GameObjLen, i * Image::GameObjLen, Image::GameObjLen, Image::GameObjLen});
         }
     }
     prevBoard = board;
-    mainWindow->imageShower.refreshInstant();
+    //mainWindow->imageShower.refreshInstant();
 }
 
 void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &board) {
@@ -116,12 +114,17 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
                 if(image == nullptr) {
                     throw Exception("Invalid GameObj Data");
                 }
-                mainWindow->imageShower.insertImage(to_string(i) + to_string(j), image, {j * 30, i * 30});
-                mainWindow->imageShower.refreshArea({j * 30, i * 30, 30, 30});
+                mainWindow->imageShower.insertImage(to_string(i) + to_string(j), image, {j * Image::GameObjLen, i * Image::GameObjLen});
+                mainWindow->imageShower.refreshArea({j * Image::GameObjLen, i * Image::GameObjLen, Image::GameObjLen, Image::GameObjLen});
             }
         }
     }
     prevBoard = board;
+    mainWindow->imageShower.refreshInstant();
+}
+
+void WindowUserInterface::showWin() {
+    mainWindow->imageShower.insertImage("win", imageManager.getImage("win"), {300, 300});
     mainWindow->imageShower.refreshInstant();
 }
 

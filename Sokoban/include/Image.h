@@ -17,9 +17,6 @@
 
 
 class Image {
-    /*DEBUG*/
-    inline static int DEBUG__imageInstanceCnt = 0;
-    /*DEBUG*/
     Image(std::string name, int length, int width);
     ~Image();
     friend class ImageManager;
@@ -27,6 +24,7 @@ class Image {
     int instanceCnt = 0;
     std::vector<HBITMAP> imagePool;
 public:
+    inline static int GameObjLen = 50;
     void resetInstances();
     HBITMAP getHBitmap();
     const std::string path;
