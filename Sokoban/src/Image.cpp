@@ -6,11 +6,18 @@ using namespace std;
 
 Image::Image(string name, int length, int width): name(name), length(length), width(width), path("resource\\" + name + ".bmp") {
     LPCSTR imagePath = path.c_str();
-    //hBitmap = (HBITMAP)LoadImage(NULL, imagePath, IMAGE_BITMAP, length, width, LR_LOADFROMFILE);
+    imageHandle = LoadImage(NULL, imagePath, IMAGE_BITMAP, length, width, LR_LOADFROMFILE);
 }
 
 HBITMAP Image::getHBitmap() {
-    auto res = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, length, width, LR_LOADFROMFILE | LR_SHARED);
+    //auto res = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, length, width, LR_LOADFROMFILE | LR_SHARED);
+    HBITMAP res = (HBITMAP)CopyImage(
+        imageHandle,
+        IMAGE_BITMAP,
+        0,
+        0,
+        0);
+    //return res;
     /*
     if(res == NULL) {
         throw Exception("Image " + name + " didn't load successfully");
