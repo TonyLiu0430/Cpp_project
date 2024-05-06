@@ -24,10 +24,12 @@ void Game<T>::loadBoard(std::string filename) {
     }
     int n, m;
     file >> n >> m;
-    board.resize(n, std::vector<char>(m));
+    board.resize(n, std::vector<GameObj>(m));
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < m; j++) {
-            file >> board[i][j];
+            char temp;
+            file >> temp;
+            board[i][j] = GameObj(temp);
         }
     }
     /*
@@ -47,16 +49,24 @@ void Game<T>::move(const Index &from, const Index &direction) {
     if(!isSafe(from) || !isSafe(from + direction)) {
         throw InvalidMoveException();
     }
-    if(isWall(from + direction)) {
+    if(getGameObj(from + direction).isWall()) {
         throw InvalidMoveException();
     }
-    if(isRoad(from + direction)) {
+    if(getGameObj(from + direction).isRoad()) {
         swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
         return;
     }
-    if(isBox(from + direction)) {
+    if(getGameObj(from + direction).isBox()) {
         move(from + direction, direction);
     }
+}
+
+template<class T>
+GameObj& Game<T>::getGameObj(const Index &index) {
+    if(!isSafe(index)) {
+        throw Exception("index ERROR");
+    }
+    return board[index.i][index.j];
 }
 
 template<class T>
@@ -69,29 +79,13 @@ bool Game<T>::isSafe(int i, int j) {
     return i >= 0 && i < board.size() && j >= 0 && j < board[i].size();
 }
 
-template<class T>
-bool Game<T>::isRoad(const Index &index) {
-    return board[index.i][index.j] == road;
-}
-
-
-template<class T>
-bool Game<T>::isWall(const Index &index) {
-    return board[index.i][index.j] == wall;
-}
-
-
-template<class T>
-bool Game<T>::isBox(const Index &index) {
-    return board[index.i][index.j] & box != 0;
-}
 
 
 template<class T>
 bool Game<T>::isWin() {
     for (int i = 0; i < board.size(); i++ ) {
         for (int j = 0; j < board[i].size(); j++ ) {
-            if(isCheckPoint({i, j}) && !isBox({i, j})) {
+            if(board[i][j].isCheckPoint() && !board[i][j].isBox()) {
                 return false;
             }
         }
@@ -99,22 +93,66 @@ bool Game<T>::isWin() {
     return true;
 }
 
-template<class T>
-void Game<T>::swapGameObj(char &a, char &b) {
-    char aIsCheck = a & checkPoint;
-    char bIsCheck = b & checkPoint;
-    a ^= b;
-    b ^= a;
-    a ^= b;
-    a ^= aIsCheck;
-    b ^= bIsCheck;
+
+
+GameObj::GameObj(char input) {
+    /*
+    /(牆)
+    -(道路)
+    0(人物當前位置)
+    1(箱子)
+    2(終點)
+    */
+    if(input == '/') {
+        data = wall;
+    } 
+    else if(input == '-') {
+        data = road;
+    } 
+    else if(input == '0') {
+        data = player;
+    } 
+    else if(input == '1') {
+        data = box;
+    } 
+    else if(input == '2') {
+        data = checkPoint;
+    } 
+    else {
+        throw Exception("Invalid input");
+    }
 }
 
-template<class T>
-bool Game<T>::isCheckPoint(const Index &index) {
-    return board[index.i][index.j] & checkPoint != 0;
+bool GameObj::isRoad() const {
+    return data == road;
 }
 
+bool GameObj::isWall() const {
+    return data == wall;
+}
+
+bool GameObj::isBox() const {
+    return data & box != 0;
+}
+
+bool GameObj::isCheckPoint() const {
+    return data & checkPoint != 0;
+}
+
+bool GameObj::isPlayer() const {
+    return data == player;
+}
+
+
+void swapGameObj(GameObj &a, GameObj &b) {
+    int aCpFlag = a.data & GameObj::checkPoint;
+    int bCpFlag = b.data & GameObj::checkPoint;
+    a.data ^= b.data;
+    b.data ^= a.data;
+    a.data ^= b.data;
+    a.data ^= aCpFlag;
+    b.data ^= bCpFlag;
+}
 
 
 template class Game<WindowUserInterface>;

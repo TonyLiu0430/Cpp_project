@@ -1,5 +1,13 @@
 #pragma once
 #ifdef AWG
+#ifdef UNICODE
+#undef UNICODE
+#endif
+#ifndef ASCII
+#define ASCII
+#endif
+
+#include <windows.h>
 #include <string>
 #include <map>
 #include <utility>
@@ -12,6 +20,7 @@ class Image {
     Image(std::string name, int length, int width);
     friend class ImageManager;
 public:
+    HBITMAP hBitmap;
     const std::string path;
     const std::string name;
     const int length;

@@ -132,6 +132,7 @@ Window::~Window() {
 }
 
 LRESULT Window::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    //cout << "process " << uMsg << " " << wParam << " " << lParam << endl;
     if(mouseProcesser.process(uMsg, wParam, lParam)) {
         return 0;
     }
@@ -142,15 +143,15 @@ LRESULT Window::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         return 0;
     }
     switch (uMsg) {
-    case WM_DESTROY: /*離開*/
-        PostQuitMessage(0);
-        return 0;
+        case WM_DESTROY: /*離開*/
+            PostQuitMessage(0);
+            return 0;
 
-    case WM_PAINT: {
+        case WM_PAINT: {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // All painting occurs here, between BeginPaint and EndPaint.
-            FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1)); /*填底色*/
+            FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW + 1)); /*填底色*/
             /**********PRINT****************/
             /**********PRINT****************/
             /**********PRINT****************/
@@ -161,7 +162,7 @@ LRESULT Window::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
             EndPaint(hWnd, &ps);
             //cout << "print\n";
         }
-        return 0;
+    return 0;
 
     }
     return DefWindowProc(hWnd, uMsg, wParam, lParam); /*windows 默認操作*/
@@ -288,9 +289,11 @@ void Window::ImageShower::show(HDC hdc) {
     for(auto &[name, imgA]: images) {
         auto &[image, point] = imgA;
         HDC mdc = CreateCompatibleDC(hdc);
+        HBITMAP bg = image->hBitmap;
+        /*
         LPCSTR imagePath = image->path.c_str();
         HBITMAP bg = (HBITMAP)LoadImage(NULL, imagePath, IMAGE_BITMAP, image->length, image->width, LR_LOADFROMFILE);
-            
+        */  
         SelectObject(mdc,bg);
         BitBlt(hdc, point.x, point.y, image->length, image->width, mdc, 0, 0, SRCAND);
     }
@@ -303,6 +306,12 @@ void Window::ImageShower::clear() {
 int Window::ImageShower::insertImage(Image* image, const Point &p) {
     /*TODO改成用數字定位*/
     images[image->name] = {image, p};
+    return 1;
+}
+
+int Window::ImageShower::insertImage(string name, Image* image, const Point &p) {
+    /*TODO改成用數字定位*/
+    images[name] = {image, p};
     return 1;
 }
 

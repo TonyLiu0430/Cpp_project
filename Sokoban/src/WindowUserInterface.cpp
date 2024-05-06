@@ -29,6 +29,8 @@ void WindowUserInterface::showStart() {
 }
 
 void WindowUserInterface::startMessageLoop() {
+    mainWindow->keyboardProcesser.insertEvent(VK_SPACE, []()
+                                              { cout << "press space\n"; });
     MainProgram::startMessageLoop();
 }
 
@@ -36,24 +38,35 @@ void WindowUserInterface::stopMessageLoop() {
     MainProgram::stopMessageLoop();
 }
 
-void WindowUserInterface::showBoard(const std::vector<std::vector<char>> &board) {
+void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &board) {
     for(int i = 0; i < board.size(); i++) {
         for(int j = 0; j < board[i].size(); j++) {
             Image *image = nullptr;
-            if(board[i][j] == '/') {
+            if(board[i][j].isWall()) {
                 image = imageManager.getImage("wall");
-            } else if(board[i][j] == '-') {
+            } 
+            else if(board[i][j].isRoad()) {
                 image = imageManager.getImage("road");
-            } else if(board[i][j] == '0') {
-                image = imageManager.getImage("man");
-            } else if(board[i][j] == '1') {
-                image = imageManager.getImage("box");
-            } else if(board[i][j] == '2') {
-                image = imageManager.getImage("checkPoint");
-            } else if(board[i][j] == '3') {
-                image = imageManager.getImage("boxOnCheckPoint");
             }
-            mainWindow->imageShower.insertImage(image, {j * 30, i * 30});
+            else if(board[i][j].isBox()) {
+                if(board[i][j].isCheckPoint()) {
+                    image = imageManager.getImage("boxOnCheckPoint");
+                }
+                else {
+                    image = imageManager.getImage("box");
+                }
+            }
+            else if(board[i][j].isCheckPoint()) {
+                image = imageManager.getImage("checkPoint");
+            }
+            
+            else if(board[i][j].isPlayer()) {
+                image = imageManager.getImage("player");
+            }
+            if(image == nullptr) {
+                throw Exception("Invalid GameObj Data");
+            }
+            mainWindow->imageShower.insertImage(to_string(i) + to_string(j), image, {j * 30, i * 30});
             mainWindow->imageShower.refreshArea({j * 30, i * 30, 30, 30});
         }
     }

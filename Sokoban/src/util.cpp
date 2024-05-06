@@ -5,7 +5,8 @@ using namespace std;
 Exception::Exception(string message): message(message) {}
 
 const char* Exception::what() const throw() {
-    return message.c_str();
+    string *res = new string(message + "Unexception Error");
+    return res->c_str();
 }
 
 Point::Point(int x, int y): x(x), y(y) {}

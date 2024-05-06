@@ -83,6 +83,7 @@ public:
         void show(HDC hdc);
         void clear();
         int insertImage(Image* image, const Point &p);
+        /*TEMP*/ int insertImage(std::string name, Image *image, const Point &p);
         int removeImage(std::string name);
         void refreshArea(const Area &area);
         void refreshInstant();

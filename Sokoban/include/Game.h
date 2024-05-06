@@ -5,10 +5,27 @@
 #include <iostream>
 #include <utility>
 
+class GameObj {
+    int data;
+    inline const static int checkPoint = 0b10000;
+    inline const static int box = 0b01000;
+    inline const static int wall = 0b00100;
+    inline const static int player = 0b00010;
+    inline const static int road = 0;
+public:
+    GameObj(char input = 0);
+    bool isRoad() const;
+    bool isWall() const;
+    bool isBox() const;
+    bool isCheckPoint() const;
+    bool isPlayer() const;
+    friend void swapGameObj(GameObj &a, GameObj &b);
+};
+
 template<class UserInterface_Type>
 class Game {
     UserInterface_Type ui;
-    std::vector<std::vector<char>> board;
+    std::vector<std::vector<GameObj>> board;
     struct Index{
         int i;
         int j;
@@ -19,6 +36,7 @@ class Game {
             return Index(i + other.i, j + other.j);
         }
     };
+    GameObj& getGameObj(const Index &index);
     Index player;
     class InvalidMoveException: public std::exception {
     public:
@@ -27,10 +45,6 @@ class Game {
         }
     };
 public:
-    inline const static char checkPoint = 0b10000;
-    inline const static char box = 0b01000;
-    inline const static char wall = 0b00100;
-    inline const static char road = 0;
     void start();
     void loadBoard(std::string filename);
     void move(const Index &from, const Index &to);
@@ -38,10 +52,8 @@ public:
     /*TODO*/ bool isLost() { return false; };
     bool isSafe(const Index &index);
     bool isSafe(int i, int j);
-    bool isRoad(const Index &index);
-    bool isWall(const Index &index);
-    bool isBox(const Index &index);
-    bool isCheckPoint(const Index &index);
-    static void swapGameObj(char &a, char &b);
 };
 
+
+
+//void swapGameObj(GameObj &a, GameObj &b);
