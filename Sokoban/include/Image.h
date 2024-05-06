@@ -37,6 +37,7 @@ class ImageManager {
     std::map<std::string, Image*> images;
 public:
     Image* getImage(std::string name);
+    bool hasImage(std::string name);
     ImageManager();
     ~ImageManager();
 };

@@ -56,6 +56,20 @@ ImageManager::ImageManager() {
 
     /*Game status Image*/
     images.emplace("win", new Image("win"s, 500, 300));
+    /*Game status Image*/
+
+    /*Board Choose Button Image*/
+    images.emplace("mission1_before", new Image("mission1_before"s, 70, 70));
+    images.emplace("mission1_after", new Image("mission1_after"s, 70, 70));
+    images.emplace("mission2_before", new Image("mission2_before"s, 70, 70));
+    images.emplace("mission2_after", new Image("mission2_after"s, 70, 70));
+    images.emplace("mission3_before", new Image("mission3_before"s, 70, 70));
+    images.emplace("mission3_after", new Image("mission3_after"s, 70, 70));
+    images.emplace("mission4_before", new Image("mission4_before"s, 70, 70));
+    images.emplace("mission4_after", new Image("mission4_after"s, 70, 70));
+    /*default*/
+    //images.emplace("default_mission_before", new Image("default_before"s, 70, 70));
+    /*Board Choose Button Image*/
 }
 
 ImageManager::~ImageManager() {
@@ -69,6 +83,10 @@ Image* ImageManager::getImage(std::string name) {
         throw Exception(name + " Image didn't initiallize OR not found");
     }
     return images[name];
+}
+
+bool ImageManager::hasImage(std::string name) {
+    return images.find(name) != images.end();
 }
 
 ButtonLike::ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag): name(name), action(action), tag(tag) {

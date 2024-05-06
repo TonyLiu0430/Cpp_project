@@ -9,7 +9,10 @@ using namespace std;
 template<class T>
 void Game<T>::start() {
     ui.showStart();
-    loadBoard("resource/missions/mission3.txt");
+    vector<string> boardList = getBoardList();
+    int chooseBoardIndex = ui.boardChoose(boardList);
+    string chooseBoard = boardList[chooseBoardIndex];
+    loadBoard(chooseBoard);
     ui.start(this);
     ui.showBoard_init(board);
     ui.startMessageLoop();
@@ -45,6 +48,27 @@ void Game<T>::loadBoard(std::string filename) {
     1(箱子)
     2(終點)
     */
+}
+
+template<class T>
+vector<string> Game<T>::getBoardList() {
+    filesystem::path dirPath = "missions";
+    if(!filesystem::exists(dirPath)) {
+        throw Exception("missions folder not found");
+    }
+    filesystem::directory_entry dir(dirPath);
+    if(!dir.is_directory()) {
+        throw Exception("missions is not a directory");
+    }
+    vector<string> boardList;
+    filesystem::directory_iterator dtrIt(dirPath);
+    for(auto &p: dtrIt) {
+        if(p.is_regular_file()) {
+            //cout << ">>>" << p.path().string() << endl;
+            boardList.push_back(p.path().string());
+        }
+    }
+    return boardList;
 }
 
 template<class T>
@@ -182,4 +206,4 @@ void swapGameObj(GameObj &a, GameObj &b) {
 
 
 template class Game<WindowUserInterface>;
-template class Game<ConsoleUserInterface>;
+//template class Game<ConsoleUserInterface>;

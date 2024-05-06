@@ -3,6 +3,7 @@
 #include "Image.h"
 #include <bits/stdc++.h>
 using namespace std;
+using std::cout;
 
 /*
 WindowUserInterface::WindowUserInterface() {
@@ -128,6 +129,30 @@ void WindowUserInterface::showWin() {
     mainWindow->imageShower.refreshInstant();
 }
 
+int WindowUserInterface::boardChoose(const std::vector<std::string> &boardList) {
+    int chooseIndex = 0;
+    for(int i = 0; i < boardList.size(); i++) {
+        if(i + 1 > 4) {
+            cerr << "尚未支援超過4個關卡" << endl;
+        }
+        ButtonLike button("mission" + to_string(i + 1), [=, &chooseIndex](){
+            try{
+                chooseIndex = i;
+                cerr << "NO ERROR" << endl;
+                MainProgram::stopMessageLoop();
+            } catch (...) {
+                system("pause");
+                std::rethrow_exception(std::current_exception());
+            }
+        });
+        mainWindow->insertButtonLike(button, {300 + i * 70, 150});
+    }
+    MainProgram::startMessageLoop();
+    /*LOOP OUT*/
+    mainWindow->imageShower.clear();
+    mainWindow->imageShower.refreshInstant();
+    return chooseIndex;
+}
 
 
 

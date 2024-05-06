@@ -21,8 +21,11 @@ int main() {
     cin >> mode;
     #endif
     if(mode == 0) {
+        /*TODO*/
+        /*
         Game<ConsoleUserInterface> game;
         game.start();
+        */
     }
     #ifdef AWG
     else {

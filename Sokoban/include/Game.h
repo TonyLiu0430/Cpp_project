@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <utility>
+#include <string>
 
 class GameObj {
 public:/*DEBUG*/
@@ -56,6 +57,7 @@ public:
 
     void start();
     void loadBoard(std::string filename);
+    std::vector<std::string> getBoardList();
     void move(const Index &from, const Index &to);
     void playMove(const Index &to);
     bool isWin();
