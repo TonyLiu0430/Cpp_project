@@ -58,7 +58,7 @@ void Game<T>::move(const Index &from, const Index &direction) {
     if(getGameObj(from + direction).isWall()) {
         throw InvalidMoveException();
     }
-    if(getGameObj(from + direction).isRoad()) {
+    if(getGameObj(from + direction).isRoad() || getGameObj(from + direction).isCheckPoint()) {
         swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
         return;
     }
@@ -154,11 +154,11 @@ bool GameObj::isPlayer() const {
 void swapGameObj(GameObj &a, GameObj &b) {
     int aCpFlag = a.data & GameObj::checkPoint;
     int bCpFlag = b.data & GameObj::checkPoint;
-    a.data ^= b.data;
-    b.data ^= a.data;
-    a.data ^= b.data;
-    a.data ^= aCpFlag;
-    b.data ^= bCpFlag;
+    a.data &= GameObj::checkPoint - 1;
+    b.data &= GameObj::checkPoint - 1;
+    std::swap(a.data, b.data);
+    a.data |= aCpFlag;
+    b.data |= bCpFlag;
 }
 
 

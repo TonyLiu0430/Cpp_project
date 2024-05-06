@@ -290,13 +290,13 @@ void Window::ImageShower::show(HDC hdc) {
     for(auto &[name, imgA]: images) {
         auto &[image, point] = imgA;
         HDC mdc = CreateCompatibleDC(hdc);
-        HBITMAP bg = image->getHBitmap();
-        /*
-        LPCSTR imagePath = image->path.c_str();
-        HBITMAP bg = (HBITMAP)LoadImage(NULL, imagePath, IMAGE_BITMAP, image->length, image->width, LR_LOADFROMFILE);
-        */  
+        HBITMAP bg = image->getHBitmap(); 
         SelectObject(mdc,bg);
         BitBlt(hdc, point.x, point.y, image->length, image->width, mdc, 0, 0, SRCAND);
+    }
+    for(auto &[name, imgA]: images) {
+        auto &[image, point] = imgA;
+        image->resetInstances();
     }
 }
 

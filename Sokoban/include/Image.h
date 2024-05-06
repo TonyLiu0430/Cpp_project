@@ -18,9 +18,13 @@
 
 class Image {
     Image(std::string name, int length, int width);
+    ~Image();
     friend class ImageManager;
     HANDLE imageHandle;
+    int instanceCnt = 0;
+    std::vector<HBITMAP> imagePool;
 public:
+    void resetInstances();
     HBITMAP getHBitmap();
     const std::string path;
     const std::string name;

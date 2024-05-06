@@ -150,6 +150,7 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
         }
     }
     prevBoard = board;
+    mainWindow->imageShower.refreshInstant();
 }
 
 

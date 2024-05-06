@@ -9,20 +9,34 @@ Image::Image(string name, int length, int width): name(name), length(length), wi
     imageHandle = LoadImage(NULL, imagePath, IMAGE_BITMAP, length, width, LR_LOADFROMFILE);
 }
 
+Image::~Image() {
+    for(auto &image: imagePool) {
+        DeleteObject(image);
+    }
+    DeleteObject(imageHandle);
+}
+
 HBITMAP Image::getHBitmap() {
-    //auto res = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, length, width, LR_LOADFROMFILE | LR_SHARED);
+    if(instanceCnt < imagePool.size()) {
+        return imagePool[instanceCnt++];
+    }
     HBITMAP res = (HBITMAP)CopyImage(
         imageHandle,
         IMAGE_BITMAP,
         0,
         0,
-        0);
-    //return res;
-    /*
+        0
+    );
     if(res == NULL) {
-        throw Exception("Image " + name + " didn't load successfully");
-    }*/
+        cerr << name << " image copy failed\n";
+    }
+    imagePool.push_back(res);
+    instanceCnt++;
     return res;
+}
+
+void Image::resetInstances() {
+    instanceCnt = 0;
 }
 
 ImageManager::ImageManager() {
