@@ -20,7 +20,8 @@ class Image {
     Image(std::string name, int length, int width);
     friend class ImageManager;
 public:
-    HBITMAP hBitmap;
+    //HBITMAP hBitmap;
+    HBITMAP getHBitmap();
     const std::string path;
     const std::string name;
     const int length;

@@ -6,9 +6,10 @@
 class ConsoleUserInterface {
 public:
     void init();
-    void start();
+    void start(Game<ConsoleUserInterface> *game);
     void showStart();
-    void showBoard(const std::vector<std::vector<GameObj>> &board){/*TODO*/};
+    void showBoard_init(const std::vector<std::vector<GameObj>> &board){};
+    void showBoard(const std::vector<std::vector<GameObj>> &board){};
     void end() {};
     void startMessageLoop();
     void stopMessageLoop() {};

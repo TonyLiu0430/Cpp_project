@@ -10,28 +10,34 @@ template<class T>
 void Game<T>::start() {
     ui.showStart();
     loadBoard("resource/missions/mission3.txt");
-    ui.start();
-    ui.showBoard(board);
+    ui.start(this);
+    ui.showBoard_init(board);
     ui.startMessageLoop();
     ui.end();
 }
 
 template<class T>
 void Game<T>::loadBoard(std::string filename) {
+    cerr << "loadBoard start\n";
     std::ifstream file(filename);
     if (!file) {
         throw Exception(filename + "Map file not found");
     }
     int n, m;
     file >> n >> m;
+    cerr << n << m;
     board.resize(n, std::vector<GameObj>(m));
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < m; j++) {
             char temp;
             file >> temp;
             board[i][j] = GameObj(temp);
+            if(board[i][j].isPlayer()) {
+                player = {i, j};
+            }
         }
     }
+    cerr << "loadBoard success\n";
     /*
     /(牆)
     -(道路)
@@ -58,6 +64,7 @@ void Game<T>::move(const Index &from, const Index &direction) {
     }
     if(getGameObj(from + direction).isBox()) {
         move(from + direction, direction);
+        swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
     }
 }
 
@@ -132,11 +139,11 @@ bool GameObj::isWall() const {
 }
 
 bool GameObj::isBox() const {
-    return data & box != 0;
+    return (data & box) != 0;
 }
 
 bool GameObj::isCheckPoint() const {
-    return data & checkPoint != 0;
+    return (data & checkPoint) != 0;
 }
 
 bool GameObj::isPlayer() const {

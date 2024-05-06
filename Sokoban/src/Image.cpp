@@ -6,7 +6,16 @@ using namespace std;
 
 Image::Image(string name, int length, int width): name(name), length(length), width(width), path("resource\\" + name + ".bmp") {
     LPCSTR imagePath = path.c_str();
-    hBitmap = (HBITMAP)LoadImage(NULL, imagePath, IMAGE_BITMAP, length, width, LR_LOADFROMFILE);
+    //hBitmap = (HBITMAP)LoadImage(NULL, imagePath, IMAGE_BITMAP, length, width, LR_LOADFROMFILE);
+}
+
+HBITMAP Image::getHBitmap() {
+    auto res = (HBITMAP)LoadImage(NULL, path.c_str(), IMAGE_BITMAP, length, width, LR_LOADFROMFILE | LR_SHARED);
+    /*
+    if(res == NULL) {
+        throw Exception("Image " + name + " didn't load successfully");
+    }*/
+    return res;
 }
 
 ImageManager::ImageManager() {

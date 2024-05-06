@@ -18,7 +18,7 @@ void ConsoleUserInterface::init() {
     /**/
 }
 
-void ConsoleUserInterface::start() {
+void ConsoleUserInterface::start(Game<ConsoleUserInterface> *game) {
     cout << "Console UserInterface start" << endl;
     _getch();
 }

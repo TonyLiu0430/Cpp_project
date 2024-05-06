@@ -117,6 +117,7 @@ void Window::createMain(std::string name) {
         );
 
     ShowWindow(mainWindow->getHWnd(), MainProgram::nCmdShow);
+    //cerr << "CREATE MAIN\n";
 }
 
 void Window::remove(Window* window) {
@@ -289,7 +290,7 @@ void Window::ImageShower::show(HDC hdc) {
     for(auto &[name, imgA]: images) {
         auto &[image, point] = imgA;
         HDC mdc = CreateCompatibleDC(hdc);
-        HBITMAP bg = image->hBitmap;
+        HBITMAP bg = image->getHBitmap();
         /*
         LPCSTR imagePath = image->path.c_str();
         HBITMAP bg = (HBITMAP)LoadImage(NULL, imagePath, IMAGE_BITMAP, image->length, image->width, LR_LOADFROMFILE);
@@ -330,7 +331,7 @@ void Window::ImageShower::refreshInstant() {
 
 void Window::ImageShower::refreshArea(const Area &area) {
     RECT rect = {(LONG)area.x, (LONG)area.y, (LONG)area.x + area.length, (LONG)area.y + area.width};
-    cout << "refresh " << " hWnd " << hWnd << " " << area.x << " " << area.y << " " << area.length << " " << area.width << endl;
+    //cout << "refresh " << " hWnd " << hWnd << " " << area.x << " " << area.y << " " << area.length << " " << area.width << endl;
     InvalidateRect(hWnd, &rect, true);
     UpdateWindow(hWnd);
 }
