@@ -32,44 +32,16 @@ void WindowUserInterface::start(Game<WindowUserInterface> *game) {
     const WPARAM VK_S = 0x53;
     const WPARAM VK_D = 0x44;
     mainWindow->keyboardProcesser.insertEvent(VK_W, [=]() {
-        try {
-            Index to{-1, 0};
-            game->move(game->player, to);
-            game->player += to;
-        } catch (Game<WindowUserInterface>::InvalidMoveException &e) {
-            /***/
-        }
-        showBoard(game->board);
+        game->playMove({-1, 0});
     });
     mainWindow->keyboardProcesser.insertEvent(VK_A, [=]() {
-        try {
-            Index to{0, -1};
-            game->move(game->player, to);
-            game->player += to;
-        } catch (Game<WindowUserInterface>::InvalidMoveException &e) {
-            /***/
-        }
-        showBoard(game->board);
+        game->playMove({0, -1});
     });
     mainWindow->keyboardProcesser.insertEvent(VK_S, [=]() {
-        try {
-            Index to{1, 0};
-            game->move(game->player, to);
-            game->player += to;
-        } catch (Game<WindowUserInterface>::InvalidMoveException &e) {
-            /***/
-        }
-        showBoard(game->board);
+        game->playMove({1, 0});
     });
     mainWindow->keyboardProcesser.insertEvent(VK_D, [=]() {
-        try {
-            Index to{0, 1};
-            game->move(game->player, to);
-            game->player += to;
-        } catch (Game<WindowUserInterface>::InvalidMoveException &e) {
-            /***/
-        }
-        showBoard(game->board);
+        game->playMove({0, 1});
     });
 }
 

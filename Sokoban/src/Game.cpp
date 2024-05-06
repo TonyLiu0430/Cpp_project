@@ -100,6 +100,24 @@ bool Game<T>::isWin() {
     return true;
 }
 
+template<class T>
+void Game<T>::playMove(const Index &to) {
+    try {
+        move(player, to);
+        player += to;
+    } catch (InvalidMoveException &e) {
+        return;
+    }
+    ui.showBoard(board);
+    if(isWin()) {
+        ui.showWin();
+        //ui.stopMessageLoop();
+    }
+    if(isLost()) {
+        ui.showLose();
+        //ui.stopMessageLoop();
+    }
+}
 
 
 GameObj::GameObj(char input) {
@@ -160,6 +178,7 @@ void swapGameObj(GameObj &a, GameObj &b) {
     a.data |= aCpFlag;
     b.data |= bCpFlag;
 }
+
 
 
 template class Game<WindowUserInterface>;

@@ -57,6 +57,7 @@ public:
     void start();
     void loadBoard(std::string filename);
     void move(const Index &from, const Index &to);
+    void playMove(const Index &to);
     bool isWin();
     /*TODO*/ bool isLost() { return false; };
     bool isSafe(const Index &index);

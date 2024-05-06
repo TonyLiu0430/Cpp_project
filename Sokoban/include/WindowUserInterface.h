@@ -5,6 +5,7 @@
 #include "windowsBase.h"
 #include <vector>
 #include <Game.h>
+#include <iostream>
 
 
 class WindowUserInterface {
@@ -18,7 +19,9 @@ public:
     void showStart();
     void showBoard_init(const std::vector<std::vector<GameObj>> &board);
     void showBoard(const std::vector<std::vector<GameObj>> &board);
-    void end(){};
+    void end(){/*TODO*/};
+    void showWin(){std::cout << "win\n";/*TODO*/};
+    void showLose(){/*TODO*/};
     void startMessageLoop();
     void stopMessageLoop();
 };
