@@ -204,6 +204,7 @@ void swapGameObj(GameObj &a, GameObj &b) {
 }
 
 
-
+#ifdef AWG
 template class Game<WindowUserInterface>;
+#endif
 //template class Game<ConsoleUserInterface>;
