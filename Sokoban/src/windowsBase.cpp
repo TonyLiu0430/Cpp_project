@@ -293,6 +293,7 @@ void Window::ImageShower::show(HDC hdc) {
         HBITMAP bg = image->getHBitmap(); 
         SelectObject(mdc,bg);
         BitBlt(hdc, point.x, point.y, image->length, image->width, mdc, 0, 0, SRCAND);
+        DeleteDC(mdc);
     }
     for(auto &[name, imgA]: images) {
         auto &[image, point] = imgA;
