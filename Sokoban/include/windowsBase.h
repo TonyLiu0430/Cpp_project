@@ -54,6 +54,7 @@ public:
         std::map<WPARAM, std::function<void()>> keyCBs;
     public:
         void insertEvent(WPARAM vk_code, std::function<void()> callBack);
+        void clear();
         void removeEvent(WPARAM vk_code);
         bool process(UINT uMsg, WPARAM wParam, LPARAM lParam);
     }keyboardProcesser;

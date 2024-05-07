@@ -24,7 +24,9 @@ class Image {
     int instanceCnt = 0;
     std::vector<HBITMAP> imagePool;
 public:
-    inline static int GameObjLen = 50;
+    inline static const int GameObjLen = 40;
+    inline static const int statusLen = 300;
+    inline static const int statusWidth = 150;
     void resetInstances();
     HBITMAP getHBitmap();
     const std::string path;

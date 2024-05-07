@@ -275,6 +275,10 @@ void Window::KeyboardProcesser::removeEvent(WPARAM vk_code) {
     keyCBs.erase(vk_code);
 }
 
+void Window::KeyboardProcesser::clear() {
+    keyCBs.clear();
+}
+
 bool Window::KeyboardProcesser::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     if(uMsg != WM_KEYDOWN) {
         return 0;

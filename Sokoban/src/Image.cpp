@@ -7,6 +7,9 @@ using namespace std;
 Image::Image(string name, int length, int width): name(name), length(length), width(width), path("resource\\" + name + ".bmp") {
     LPCSTR imagePath = path.c_str();
     imageHandle = LoadImage(NULL, imagePath, IMAGE_BITMAP, length, width, LR_LOADFROMFILE);
+    if(imageHandle == NULL) {
+        throw Exception(name + " image not Found or load failed");
+    }
 }
 
 Image::~Image() {
@@ -52,6 +55,7 @@ ImageManager::ImageManager() {
     images.emplace("box", new Image("box"s, Image::GameObjLen, Image::GameObjLen));
     images.emplace("checkPoint", new Image("checkPoint"s, Image::GameObjLen, Image::GameObjLen));
     images.emplace("boxOnCheckPoint", new Image("boxOnCheckPoint"s, Image::GameObjLen, Image::GameObjLen));
+    images.emplace("playerOnCheckPoint", new Image("playerOnCheckPoint"s, Image::GameObjLen, Image::GameObjLen));
     /*Game Obj Image*/
 
     /*Game status Image*/
@@ -69,6 +73,9 @@ ImageManager::ImageManager() {
     images.emplace("mission4_after", new Image("mission4_after"s, 70, 70));
     /*default*/
     //images.emplace("default_mission_before", new Image("default_before"s, 70, 70));
+    /*Board Choose Button Image*/
+    images.emplace("chooseLevel", new Image("chooseLevel"s, Image::statusLen, Image::statusWidth));
+    images.emplace("playing", new Image("playing"s, Image::statusLen, Image::statusWidth));
     /*Board Choose Button Image*/
 }
 

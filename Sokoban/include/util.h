@@ -14,6 +14,9 @@ struct Point {
     int x, y;
     Point(int x, int y);
     Point(): x(0), y(0) {}
+    operator std::pair<int, int>() const {
+        return std::make_pair(x, y);
+    }
 };
 
 

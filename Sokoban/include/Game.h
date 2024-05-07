@@ -54,6 +54,12 @@ public:
             return "Invalid move";
         }
     };
+    class QuitGameException: public std::exception {
+    public:
+        const char* what() const noexcept override {
+            return "Quit game";
+        }
+    };
 
     void start();
     void loadBoard(std::string filename);

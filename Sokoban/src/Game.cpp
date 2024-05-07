@@ -8,15 +8,19 @@ using namespace std;
 
 template<class T>
 void Game<T>::start() {
-    ui.showStart();
-    vector<string> boardList = getBoardList();
-    int chooseBoardIndex = ui.boardChoose(boardList);
-    string chooseBoard = boardList[chooseBoardIndex];
-    loadBoard(chooseBoard);
-    ui.start(this);
-    ui.showBoard_init(board);
-    ui.startMessageLoop();
-    ui.end();
+    try {
+        ui.showStart();
+        vector<string> boardList = getBoardList();
+        while(true) {
+            int chooseBoardIndex = ui.boardChoose(boardList);
+            string chooseBoard = boardList[chooseBoardIndex];
+            loadBoard(chooseBoard);
+            ui.start(this);
+            ui.end();
+        }
+    } catch (QuitGameException &e) {
+        return;
+    }
 }
 
 template<class T>
@@ -29,6 +33,7 @@ void Game<T>::loadBoard(std::string filename) {
     int n, m;
     file >> n >> m;
     cerr << n << m;
+    board.clear();
     board.resize(n, std::vector<GameObj>(m));
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < m; j++) {
@@ -61,8 +66,8 @@ vector<string> Game<T>::getBoardList() {
         throw Exception("missions is not a directory");
     }
     vector<string> boardList;
-    filesystem::directory_iterator dtrIt(dirPath);
-    for(auto &p: dtrIt) {
+    filesystem::directory_iterator dirIt(dirPath);
+    for(auto &p: dirIt) {
         if(p.is_regular_file()) {
             //cout << ">>>" << p.path().string() << endl;
             boardList.push_back(p.path().string());
@@ -82,14 +87,16 @@ void Game<T>::move(const Index &from, const Index &direction) {
     if(getGameObj(from + direction).isWall()) {
         throw InvalidMoveException();
     }
+    if(getGameObj(from + direction).isBox()) {
+        move(from + direction, direction);
+        swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
+        return;
+    }
     if(getGameObj(from + direction).isRoad() || getGameObj(from + direction).isCheckPoint()) {
         swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
         return;
     }
-    if(getGameObj(from + direction).isBox()) {
-        move(from + direction, direction);
-        swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
-    }
+    
 }
 
 template<class T>
@@ -135,11 +142,11 @@ void Game<T>::playMove(const Index &to) {
     ui.showBoard(board);
     if(isWin()) {
         ui.showWin();
-        //ui.stopMessageLoop();
+        ui.stopMessageLoop();
     }
     if(isLost()) {
         ui.showLose();
-        //ui.stopMessageLoop();
+        ui.stopMessageLoop();
     }
 }
 
@@ -189,7 +196,7 @@ bool GameObj::isCheckPoint() const {
 }
 
 bool GameObj::isPlayer() const {
-    return data == player;
+    return (data & player) != 0;
 }
 
 
