@@ -13,14 +13,20 @@
 #include <functional>
 #include <exception>
 #include <map>
+#include <thread>
+#include <mutex>
 #include "Image.h"
 #include "util.h"
+
+#define __DEBUG__MY friend class WindowUserInterface;
 
 class ButtonLike;
 class Image;
 
 class MainProgram {
-    inline static bool isRunning = true;
+    inline static bool isRunning = false;
+    //inline static std::mutex messageLoopMutex{};
+    //inline static atomic_bool callByMsgLoop = false;
 public:
     inline static HINSTANCE hInstance{};
     inline static int nCmdShow{};
@@ -30,6 +36,8 @@ public:
 };
 
 class Window {
+    /*DEBUG*/ __DEBUG__MY
+
 protected:
     HWND hWnd;
     inline static std::map<HWND, Window* > hWndObjs{};
@@ -51,6 +59,7 @@ public:
     void registerMessageCB(UINT msg, std::function <void()> callBack);
     
     class KeyboardProcesser {
+    __DEBUG__MY
         std::map<WPARAM, std::function<void()>> keyCBs;
     public:
         void insertEvent(WPARAM vk_code, std::function<void()> callBack);
@@ -60,7 +69,9 @@ public:
     }keyboardProcesser;
     class MouseProcesser {
     private:
+    __DEBUG__MY
         class EventHandler {
+        __DEBUG__MY
             std::vector<std::pair<Area, std::function<void()>>> cBs;
         public:
             void insertEvent(Area, std::function<void()> cb);
@@ -90,7 +101,7 @@ public:
         void refreshInstant();
     };
     ImageShower imageShower{hWnd};
-    void insertButtonLike(const ButtonLike &button, Point);
+    void insertButtonLike(ButtonLike button, Point);
 };
 
 inline Window *mainWindow = nullptr;

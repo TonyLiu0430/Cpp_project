@@ -1,6 +1,7 @@
 #ifdef AWG
 #include "windowsBase.h"
 #include <bits/stdc++.h>
+#include <mutex>
 #include "util.h"
 #include "Image.h"
 
@@ -17,8 +18,7 @@ void MainProgram::startMessageLoop(){
     isRunning = true;
     cout << "start message loop\n";
     MSG msg = {};
-    while (isRunning && GetMessage(&msg, NULL, 0, 0) > 0)
-    {
+    while (isRunning && GetMessage(&msg, NULL, 0, 0) > 0) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
@@ -30,13 +30,27 @@ void MainProgram::stopMessageLoop() {
 }
 
 /*訊息處裡函式*/
+
+
 LRESULT MainProgram::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     //cout << hwnd << " " << uMsg << " " << wParam << " " << lParam << endl;
+    //std::lock_guard lock(messageLoopMutex);
+    //cerr << "lock" << endl;
+    /*
+    DWORD ProcessID;
+    DWORD ThreadID;
+    ThreadID=GetWindowThreadProcessId(hwnd,&ProcessID);
+    cerr << "Now ThreadID: " << ThreadID << " ProcessID: " << ProcessID << endl;*/
+    if(isRunning == false) {
+        cerr << "WTF " << hwnd << " " << std::hex << uMsg << std::dec << " " << wParam << " " << lParam << endl;
+    }
     if(mainWindow == nullptr) {
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
-    return Window::getWindow(hwnd)->process(uMsg, wParam, lParam);
-    //return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    else {
+        return mainWindow->process(uMsg, wParam, lParam);
+    }
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 Window::Window(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,int nWidth,int nHeight,HWND hWndParent,HMENU hMenu,HINSTANCE hInstance,LPVOID lpParam) {
@@ -134,6 +148,7 @@ Window::~Window() {
 
 LRESULT Window::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     //cout << "process " << uMsg << " " << wParam << " " << lParam << endl;
+
     if(mouseProcesser.process(uMsg, wParam, lParam)) {
         return 0;
     }
@@ -195,7 +210,7 @@ void Window::registerMessageCB(UINT msg, function<void()> callBack) {
     messageCBs_noArgs[msg] = callBack;
 }
 
-void Window::insertButtonLike(const ButtonLike &button, Point p) {
+void Window::insertButtonLike(ButtonLike button, Point p) {
     Area area({p.x, p.y}, {button.length, button.width});
     mouseProcesser.moveIn.insertEvent(area, [=]() {
         if(imageShower.removeImage(button.name + "_before")) {
@@ -209,16 +224,29 @@ void Window::insertButtonLike(const ButtonLike &button, Point p) {
             imageShower.refreshArea(area);
         }
     });
+    /*
+    if(button.name == "mission4") {
+        cerr << "mission4 button address OUT" << &button << endl;
+    }*/
     mouseProcesser.click.insertEvent(area, [=]() {
+        /*
+        cerr << "click\n";
+        if(button.name == "mission4") {
+            cerr << "mission4 button address IN LAMBDA" << &button << endl;
+        }*/
         if(button.tag == ButtonLike::ActionTag::once) {
             mouseProcesser.moveOut.removeEvent(area);
             mouseProcesser.moveIn.removeEvent(area);
+            cerr << "NO ERROR AT UP" << button.name << endl;
             mouseProcesser.click.removeEvent(area);
+            cerr << "NO ERROR AT DOWN" << button.name << endl;
             if(imageShower.removeImage(button.name + "_before") | imageShower.removeImage(button.name + "_after")) {
                 imageShower.refreshArea(area);
             }
         }
+        cerr << "NO ERROR CALL BUTTON ACTION " << button.name << endl;
         button.action();
+        cerr << "NO ERROR CALL BUTTON ACTION END " << button.name << endl;
         //imageShower.refreshArea(hWnd, area);
     });
     imageShower.insertImage(button.before, {p.x, p.y});
@@ -230,6 +258,7 @@ void Window::MouseProcesser::EventHandler::insertEvent(Area area, std::function<
     cBs.push_back({area, cb});
 }
 
+std::mutex mtx;
 void Window::MouseProcesser::EventHandler::removeEvent(const Area &area) {
     for (auto it = cBs.begin(); it != cBs.end(); it++) {
         if (it->first == area) {
@@ -247,7 +276,11 @@ void Window::MouseProcesser::EventHandler::changeEvent(const Area &area, std::fu
 void Window::MouseProcesser::EventHandler::process(int x, int y) {
     for(auto &[area, cb] : cBs) {
         if(trigger(area, x, y)) {
-            cb();
+            try{
+                cb();
+            }catch(std::bad_function_call &e) {
+                cerr << "bad function call\n";
+            }
         }
     }
 }
@@ -323,7 +356,6 @@ int Window::ImageShower::insertImage(string name, Image* image, const Point &p) 
 
 int Window::ImageShower::removeImage(std::string name) {
     if(images.find(name) != images.end()) {
-        cout << "remove " << name << endl;
         images.erase(name);
         return 1;
     }
