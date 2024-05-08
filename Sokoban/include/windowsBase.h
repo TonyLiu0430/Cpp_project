@@ -18,7 +18,6 @@
 #include "Image.h"
 #include "util.h"
 
-#define __DEBUG__MY friend class WindowUserInterface;
 
 class ButtonLike;
 class Image;
@@ -36,8 +35,6 @@ public:
 };
 
 class Window {
-    /*DEBUG*/ __DEBUG__MY
-
 protected:
     HWND hWnd;
     inline static std::map<HWND, Window* > hWndObjs{};
@@ -59,7 +56,6 @@ public:
     void registerMessageCB(UINT msg, std::function <void()> callBack);
     
     class KeyboardProcesser {
-    __DEBUG__MY
         std::map<WPARAM, std::function<void()>> keyCBs;
     public:
         void insertEvent(WPARAM vk_code, std::function<void()> callBack);
@@ -69,10 +65,11 @@ public:
     }keyboardProcesser;
     class MouseProcesser {
     private:
-    __DEBUG__MY
         class EventHandler {
-        __DEBUG__MY
+            std::mutex cBs_Mutex;
             std::vector<std::pair<Area, std::function<void()>>> cBs;
+            //threadSafe <std::vector<std::pair<Area, std::function<void()>>>> cBs_ts;
+
         public:
             void insertEvent(Area, std::function<void()> cb);
             void removeEvent(const Area &area);
@@ -103,6 +100,7 @@ public:
     ImageShower imageShower{hWnd};
     void insertButtonLike(ButtonLike button, Point);
 };
+
 
 inline Window *mainWindow = nullptr;
 

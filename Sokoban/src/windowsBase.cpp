@@ -30,20 +30,7 @@ void MainProgram::stopMessageLoop() {
 }
 
 /*訊息處裡函式*/
-
-
 LRESULT MainProgram::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    //cout << hwnd << " " << uMsg << " " << wParam << " " << lParam << endl;
-    //std::lock_guard lock(messageLoopMutex);
-    //cerr << "lock" << endl;
-    /*
-    DWORD ProcessID;
-    DWORD ThreadID;
-    ThreadID=GetWindowThreadProcessId(hwnd,&ProcessID);
-    cerr << "Now ThreadID: " << ThreadID << " ProcessID: " << ProcessID << endl;*/
-    if(isRunning == false) {
-        cerr << "WTF " << hwnd << " " << std::hex << uMsg << std::dec << " " << wParam << " " << lParam << endl;
-    }
     if(mainWindow == nullptr) {
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
@@ -258,8 +245,12 @@ void Window::MouseProcesser::EventHandler::insertEvent(Area area, std::function<
     cBs.push_back({area, cb});
 }
 
-std::mutex mtx;
+
 void Window::MouseProcesser::EventHandler::removeEvent(const Area &area) {
+    if(cBs.size() == 0) {
+        return;
+    }
+    std::lock_guard lock(cBs_Mutex);
     for (auto it = cBs.begin(); it != cBs.end(); it++) {
         if (it->first == area) {
             cBs.erase(it);
@@ -274,14 +265,19 @@ void Window::MouseProcesser::EventHandler::changeEvent(const Area &area, std::fu
 }
 
 void Window::MouseProcesser::EventHandler::process(int x, int y) {
+    if(cBs.size() == 0) {
+        return;
+    }
+    std::unique_lock lock(cBs_Mutex);
+    vector<function<void()>> funcs;
     for(auto &[area, cb] : cBs) {
         if(trigger(area, x, y)) {
-            try{
-                cb();
-            }catch(std::bad_function_call &e) {
-                cerr << "bad function call\n";
-            }
+            funcs.push_back(cb);
         }
+    }
+    lock.unlock();
+    for(auto &cb: funcs) {
+        cb();
     }
 }
 

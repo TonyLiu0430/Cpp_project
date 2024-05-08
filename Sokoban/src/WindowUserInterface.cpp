@@ -125,53 +125,12 @@ int WindowUserInterface::boardChoose(const std::vector<std::string> &boardList) 
         /*******BUGGGGG*/
         ButtonLike button("mission" + to_string(i + 1), [=, &chooseIndex](){
             cerr << "mission" + to_string(i + 1) << " clicked\n";
-            try{
-                chooseIndex = i;
-                MainProgram::stopMessageLoop();
-            } catch (...) {
-                system("pause");
-                cerr << "INSIDE";
-                std::rethrow_exception(std::current_exception());
-            }
-            
+            chooseIndex = i;
+            MainProgram::stopMessageLoop();
         });
         mainWindow->insertButtonLike(button, {imageManager.getImage("chooseLevel")->length + 50 + i * 90, imageManager.getImage("chooseLevel")->width + 50});
     }
-    try{
-        MainProgram::startMessageLoop();
-    } catch (std::bad_function_call &e) {
-        cerr << "------------------------\n";
-        Point p = {imageManager.getImage("chooseLevel")->length + 50 + 3 * 90, imageManager.getImage("chooseLevel")->width + 50};
-        cerr << "===" << p.x << endl;
-        cerr << std::dec;
-        cerr << "msgCBs:\n";
-        for(auto &[x, y] : mainWindow->messageCBs) {
-            cerr << x << boolalpha << (y.target_type() == typeid(void)) << endl;
-        }
-        cerr << "msgCBs_noArgs:\n";
-        for(auto &[x, y] : mainWindow->messageCBs_noArgs) {
-            cerr << x << boolalpha << (y.target_type() == typeid(void))<< endl;
-        }
-        cerr << "mouse in:\n";
-        for(auto &[x, y] : mainWindow->mouseProcesser.moveIn.cBs) {
-            cerr << x.x << boolalpha << (y.target_type() == typeid(void))<< endl;
-        }
-        cerr << "mouse out:\n";
-        for(auto &[x, y] : mainWindow->mouseProcesser.moveOut.cBs) {
-            cerr << x.x << boolalpha << (y.target_type() == typeid(void))<< endl;
-        }
-        cerr << "mouse click:\n";
-        for(auto &[x, y] : mainWindow->mouseProcesser.click.cBs) {
-            cerr << x.x << boolalpha << (y.target_type() == typeid(void))<< endl;
-        }
-
-        cerr << "------------------------";
-        system("pause");
-        cerr << "OUTSIDE" << endl;
-        cerr << e.what() << endl;
-        std::rethrow_exception(std::current_exception());
-    }
-    //MainProgram::startMessageLoop();
+    MainProgram::startMessageLoop();
     /*LOOP OUT*/
     mainWindow->imageShower.clear();
     mainWindow->imageShower.refreshInstant();
