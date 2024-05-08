@@ -1,10 +1,11 @@
 #include "ConsoleUserInterface.h"
 
 #include <bits/stdc++.h>
-#ifdef AWG
+#ifdef _WIN32
 #include <conio.h>
 #endif
-using std::cin;
+
+#include "util.h"
 using std::cout;
 using namespace std;
 

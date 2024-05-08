@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "util.h"
 #include "UserInterface.hpp"
 #include "ConsoleUserInterface.h"
 #include "WindowUserInterface.h"
