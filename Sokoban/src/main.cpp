@@ -20,12 +20,9 @@ int main() {
     cout << "按下 1 以視窗應用程式介面開啟遊戲" << endl;
     cin >> mode;
     #endif
-    if(mode == 0) {
-        /*TODO*/
-        /*
+    if(mode != 1) {
         Game<ConsoleUserInterface> game;
         game.start();
-        */
     }
     #ifdef AWG
     else {

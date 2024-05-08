@@ -5,17 +5,11 @@
 using namespace std;
 using std::cout;
 
-/*
+
 WindowUserInterface::WindowUserInterface() {
     cout << "Window UserInterface start" << endl;
     Window::createMain("SOKOBAN");
-}*/
-
-void WindowUserInterface::init() {
-    cout << "Window UserInterface start" << endl;
-    Window::createMain("SOKOBAN");
 }
-
 
 void WindowUserInterface::showStart() {
     ButtonLike start("start", [](){
@@ -25,7 +19,7 @@ void WindowUserInterface::showStart() {
     MainProgram::startMessageLoop();
 }
 
-void WindowUserInterface::start(Game<WindowUserInterface> *game) {
+void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
     const WPARAM VK_W = 0x57;
     const WPARAM VK_A = 0x41;
     const WPARAM VK_S = 0x53;

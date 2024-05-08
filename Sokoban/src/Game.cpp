@@ -15,7 +15,7 @@ void Game<T>::start() {
             int chooseBoardIndex = ui.boardChoose(boardList);
             string chooseBoard = boardList[chooseBoardIndex];
             loadBoard(chooseBoard);
-            ui.start(this);
+            ui.startPlay(this);
             ui.end();
         }
     } catch (QuitGameException &e) {
@@ -241,4 +241,4 @@ void swapGameObj(GameObj &a, GameObj &b) {
 #ifdef AWG
 template class Game<WindowUserInterface>;
 #endif
-//template class Game<ConsoleUserInterface>;
+template class Game<ConsoleUserInterface>;

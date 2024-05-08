@@ -10,11 +10,8 @@
 
 class WindowUserInterface {
 public:
-    WindowUserInterface(){
-        init();
-    }
-    void init();
-    void start(Game<WindowUserInterface> *game);
+    WindowUserInterface();
+    void startPlay(Game<WindowUserInterface> *game);
     void showStart();
     int boardChoose(const std::vector<std::string> &boardList);
     void showBoard(const std::vector<std::vector<GameObj>> &board, bool init = false);
