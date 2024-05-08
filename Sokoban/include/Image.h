@@ -46,7 +46,10 @@ public:
 
 inline ImageManager imageManager;
 
+
+class Window;
 class ButtonLike {
+    inline static std::map<std::string, Area> buttonAreas{};
 public:
     int length;
     int width;
@@ -60,6 +63,9 @@ public:
     };
     ActionTag tag;
     ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag = ActionTag::once);
+
+    static void insertToWindow(Window *window, ButtonLike button, Point p);
+    static void deleteFromWindow(Window *window, std::string name);
 };
 
 

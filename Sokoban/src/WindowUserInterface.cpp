@@ -21,7 +21,7 @@ void WindowUserInterface::showStart() {
     ButtonLike start("start", [](){
         MainProgram::stopMessageLoop();
     });
-    mainWindow->insertButtonLike(start, {500, 300});
+    ButtonLike::insertToWindow(mainWindow, start, {500, 300});
     MainProgram::startMessageLoop();
 }
 
@@ -42,7 +42,7 @@ void WindowUserInterface::start(Game<WindowUserInterface> *game) {
     mainWindow->keyboardProcesser.insertEvent(VK_D, [=]() {
         game->playMove({0, 1});
     });
-    showBoard(game->board);
+    showBoard(game->board, true);
     MainProgram::startMessageLoop();
     /*Loop out*/
     mainWindow->keyboardProcesser.clear();
@@ -69,8 +69,16 @@ void WindowUserInterface::stopMessageLoop() {
     MainProgram::stopMessageLoop();
 }
 
-void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &board) {
-    mainWindow->imageShower.insertImage(imageManager.getImage("playing"), {0, 0});
+void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &board, bool init) {
+    if(init) {
+        mainWindow->imageShower.insertImage(imageManager.getImage("playing"), {0, 0});
+        ButtonLike surrender("surrender", [=](){
+            showLose();
+            MainProgram::stopMessageLoop(); 
+        });
+        ButtonLike::insertToWindow(mainWindow, surrender, {0, Image::statusWidth + 50});
+    }
+
     for(int i = 0; i < board.size(); i++) {
         for(int j = 0; j < board[i].size(); j++) {
             Image *image = nullptr;
@@ -110,7 +118,14 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
 }
 
 void WindowUserInterface::showWin() {
+    ButtonLike::deleteFromWindow(mainWindow, "surrender");
     mainWindow->imageShower.insertImage("win", imageManager.getImage("win"), {Image::statusLen + 300, Image::statusWidth + 300});
+    mainWindow->imageShower.refreshInstant();
+}
+
+void WindowUserInterface::showLose() {
+    ButtonLike::deleteFromWindow(mainWindow, "surrender");
+    mainWindow->imageShower.insertImage("lose", imageManager.getImage("lose"), {Image::statusLen + 300, Image::statusWidth + 300});
     mainWindow->imageShower.refreshInstant();
 }
 
@@ -119,16 +134,17 @@ int WindowUserInterface::boardChoose(const std::vector<std::string> &boardList) 
     mainWindow->imageShower.insertImage(imageManager.getImage("chooseLevel"), {0, 0});
     mainWindow->imageShower.refreshArea({0, 0, imageManager.getImage("chooseLevel")->length, imageManager.getImage("chooseLevel")->width});
     for(int i = 0; i < boardList.size(); i++) {
-        if(i + 1 > 4) {
-            cerr << "尚未支援超過4個關卡" << endl;
+        if(imageManager.hasImage("mission" + to_string(i + 1) + "_before") == false){
+            cerr << "尚未支援超過"<< i + 1 << "個關卡" << endl;
+            cerr << "\t\t" << boardList[i] << "無法顯示\n";
+            continue;
         }
-        /*******BUGGGGG*/
         ButtonLike button("mission" + to_string(i + 1), [=, &chooseIndex](){
             cerr << "mission" + to_string(i + 1) << " clicked\n";
             chooseIndex = i;
             MainProgram::stopMessageLoop();
         });
-        mainWindow->insertButtonLike(button, {imageManager.getImage("chooseLevel")->length + 50 + i * 90, imageManager.getImage("chooseLevel")->width + 50});
+        ButtonLike::insertToWindow(mainWindow, button, {imageManager.getImage("chooseLevel")->length + 50 + i * 90, imageManager.getImage("chooseLevel")->width + 50});
     }
     MainProgram::startMessageLoop();
     /*LOOP OUT*/

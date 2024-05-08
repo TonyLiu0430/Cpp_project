@@ -23,6 +23,7 @@ struct Point {
 struct Area {
     int x, y, length, width;
     Area(int x, int y, int length, int width);
+    Area() = default;
     Area(const std::pair<int, int> &coordinate, const std::pair<int, int> &size);
     bool isIn(int x, int y);
     bool isOut(int x, int y);

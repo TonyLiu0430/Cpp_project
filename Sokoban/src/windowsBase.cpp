@@ -156,11 +156,7 @@ LRESULT Window::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
             // All painting occurs here, between BeginPaint and EndPaint.
             FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW + 1)); /*填底色*/
             /**********PRINT****************/
-            /**********PRINT****************/
-            /**********PRINT****************/
             imageShower.show(hdc);
-            /**********PRINT****************/
-            /**********PRINT****************/
             /**********PRINT****************/
             EndPaint(hWnd, &ps);
             //cout << "print\n";
@@ -197,6 +193,7 @@ void Window::registerMessageCB(UINT msg, function<void()> callBack) {
     messageCBs_noArgs[msg] = callBack;
 }
 
+/*
 void Window::insertButtonLike(ButtonLike button, Point p) {
     Area area({p.x, p.y}, {button.length, button.width});
     mouseProcesser.moveIn.insertEvent(area, [=]() {
@@ -211,37 +208,24 @@ void Window::insertButtonLike(ButtonLike button, Point p) {
             imageShower.refreshArea(area);
         }
     });
-    /*
-    if(button.name == "mission4") {
-        cerr << "mission4 button address OUT" << &button << endl;
-    }*/
     mouseProcesser.click.insertEvent(area, [=]() {
-        /*
-        cerr << "click\n";
-        if(button.name == "mission4") {
-            cerr << "mission4 button address IN LAMBDA" << &button << endl;
-        }*/
         if(button.tag == ButtonLike::ActionTag::once) {
             mouseProcesser.moveOut.removeEvent(area);
             mouseProcesser.moveIn.removeEvent(area);
-            cerr << "NO ERROR AT UP" << button.name << endl;
             mouseProcesser.click.removeEvent(area);
-            cerr << "NO ERROR AT DOWN" << button.name << endl;
             if(imageShower.removeImage(button.name + "_before") | imageShower.removeImage(button.name + "_after")) {
                 imageShower.refreshArea(area);
             }
         }
-        cerr << "NO ERROR CALL BUTTON ACTION " << button.name << endl;
         button.action();
-        cerr << "NO ERROR CALL BUTTON ACTION END " << button.name << endl;
         //imageShower.refreshArea(hWnd, area);
     });
     imageShower.insertImage(button.before, {p.x, p.y});
     imageShower.refreshArea(area);
 }
+*/
 
 void Window::MouseProcesser::EventHandler::insertEvent(Area area, std::function<void()> cb) {
-    cout << "insert Mouse Event\n";
     cBs.push_back({area, cb});
 }
 

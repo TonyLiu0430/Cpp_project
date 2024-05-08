@@ -2,6 +2,7 @@
 #include <bits/stdc++.h>
 #include "Image.h"
 #include "util.h"
+#include "windowsBase.h"
 using namespace std;
 
 Image::Image(string name, int length, int width): name(name), length(length), width(width), path("resource\\" + name + ".bmp") {
@@ -60,23 +61,24 @@ ImageManager::ImageManager() {
 
     /*Game status Image*/
     images.emplace("win", new Image("win"s, 500, 300));
+    images.emplace("lose", new Image("lose"s, 500, 300));
     /*Game status Image*/
 
     /*Board Choose Button Image*/
-    images.emplace("mission1_before", new Image("mission1_before"s, 70, 70));
-    images.emplace("mission1_after", new Image("mission1_after"s, 70, 70));
-    images.emplace("mission2_before", new Image("mission2_before"s, 70, 70));
-    images.emplace("mission2_after", new Image("mission2_after"s, 70, 70));
-    images.emplace("mission3_before", new Image("mission3_before"s, 70, 70));
-    images.emplace("mission3_after", new Image("mission3_after"s, 70, 70));
-    images.emplace("mission4_before", new Image("mission4_before"s, 70, 70));
-    images.emplace("mission4_after", new Image("mission4_after"s, 70, 70));
-    /*default*/
-    //images.emplace("default_mission_before", new Image("default_before"s, 70, 70));
+    for (int i = 1; i <= 5; i++ ) {
+        string imageName = "mission" + to_string(i);
+        images.emplace(imageName + "_before", new Image(imageName + "_before", 70, 70));
+        images.emplace(imageName + "_after", new Image(imageName + "_after", 70, 70));
+    }
     /*Board Choose Button Image*/
     images.emplace("chooseLevel", new Image("chooseLevel"s, Image::statusLen, Image::statusWidth));
     images.emplace("playing", new Image("playing"s, Image::statusLen, Image::statusWidth));
     /*Board Choose Button Image*/
+
+    /*Button*/
+    images.emplace("surrender_before", new Image("surrender_before"s, 150, 150));
+    images.emplace("surrender_after", new Image("surrender_after"s, 150, 150));
+    /*Button*/
 }
 
 ImageManager::~ImageManager() {
@@ -101,6 +103,45 @@ ButtonLike::ButtonLike(std::string name, std::function<void(void)> action, Actio
     after = imageManager.getImage(name + "_after");
     length = before->length;
     width = before->width;
+}
+
+void ButtonLike::insertToWindow(Window *window, ButtonLike button, Point p) {
+    Area area({p.x, p.y}, {button.length, button.width});
+    buttonAreas.insert({button.name, area});
+    window->mouseProcesser.moveIn.insertEvent(area, [=]() {
+        if(window->imageShower.removeImage(button.name + "_before")) {
+            window->imageShower.insertImage(button.after, {p.x, p.y});
+            window->imageShower.refreshArea(area);
+        }
+    });
+    window->mouseProcesser.moveOut.insertEvent(area, [=]() {
+        if(window->imageShower.removeImage(button.name + "_after")) {
+            window->imageShower.insertImage(button.before, {p.x, p.y});
+            window->imageShower.refreshArea(area);
+        }
+    });
+    window->mouseProcesser.click.insertEvent(area, [=]() {
+        if(button.tag == ButtonLike::ActionTag::once) {
+            deleteFromWindow(window, button.name);
+        }
+        button.action();
+    });
+    window->imageShower.insertImage(button.before, {p.x, p.y});
+    window->imageShower.refreshArea(area);
+}
+
+void ButtonLike::deleteFromWindow(Window *window, string name) {
+    if(buttonAreas.find(name) == buttonAreas.end()) {
+        return;
+    }
+    Area area = buttonAreas[name];
+    window->mouseProcesser.moveOut.removeEvent(area);
+    window->mouseProcesser.moveIn.removeEvent(area);
+    window->mouseProcesser.click.removeEvent(area);
+    if(window->imageShower.removeImage(name + "_before") | window->imageShower.removeImage(name + "_after")) {
+        window->imageShower.refreshArea(area);
+    }
+    buttonAreas.erase(name);
 }
 
 #endif

@@ -98,7 +98,7 @@ public:
         void refreshInstant();
     };
     ImageShower imageShower{hWnd};
-    void insertButtonLike(ButtonLike button, Point);
+    //void insertButtonLike(ButtonLike button, Point);
 };
 
 

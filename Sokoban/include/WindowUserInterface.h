@@ -17,10 +17,10 @@ public:
     void start(Game<WindowUserInterface> *game);
     void showStart();
     int boardChoose(const std::vector<std::string> &boardList);
-    void showBoard(const std::vector<std::vector<GameObj>> &board);
+    void showBoard(const std::vector<std::vector<GameObj>> &board, bool init = false);
     void end();
     void showWin();
-    void showLose(){/*TODO*/};
+    void showLose();
     void startMessageLoop();
     void stopMessageLoop();
 };
