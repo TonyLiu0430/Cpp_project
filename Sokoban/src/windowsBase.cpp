@@ -35,7 +35,11 @@ LRESULT MainProgram::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
     else {
-        return mainWindow->process(uMsg, wParam, lParam);
+        try {
+            return Window::getWindow(hwnd)->process(uMsg, wParam, lParam);
+        } catch(Window::FindWindowException &e) {
+            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+        }
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
@@ -58,12 +62,14 @@ Window::Window(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD d
     if(hWnd == NULL) {
         throw Exception("window create error");
     }
-    //hWndObjs[hWnd] = this;
+    hWndObjs[hWnd] = this;
 }
 
 Window* Window::getWindow(HWND hWnd) {
     if(hWndObjs.find(hWnd) == hWndObjs.end()) {
-        throw Exception("cannot find windows instance");
+        //throw Exception("cannot find windows instance");
+        cerr << "cannot find windows instance: unexcepted ERROR\n";
+        throw FindWindowException();
     }
     return hWndObjs[hWnd];
 }
@@ -73,7 +79,7 @@ HWND Window::getHWnd() {
 }
 
 Window* Window::create(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y,int nWidth,int nHeight,HWND hWndParent,HMENU hMenu,HINSTANCE hInstance,LPVOID lpParam) {
-    Window *res = new Window(
+    return new Window(
         dwExStyle,
         lpClassName,
         lpWindowName,
@@ -87,8 +93,6 @@ Window* Window::create(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName,
         hInstance,
         lpParam
     );
-    hWndObjs[res->hWnd] = res;
-    return res;
 }
 
 void Window::createMain(std::string name) {
@@ -193,37 +197,6 @@ void Window::registerMessageCB(UINT msg, function<void()> callBack) {
     messageCBs_noArgs[msg] = callBack;
 }
 
-/*
-void Window::insertButtonLike(ButtonLike button, Point p) {
-    Area area({p.x, p.y}, {button.length, button.width});
-    mouseProcesser.moveIn.insertEvent(area, [=]() {
-        if(imageShower.removeImage(button.name + "_before")) {
-            imageShower.insertImage(button.after, {p.x, p.y});
-            imageShower.refreshArea(area);
-        }
-    });
-    mouseProcesser.moveOut.insertEvent(area, [=]() {
-        if(imageShower.removeImage(button.name + "_after")) {
-            imageShower.insertImage(button.before, {p.x, p.y});
-            imageShower.refreshArea(area);
-        }
-    });
-    mouseProcesser.click.insertEvent(area, [=]() {
-        if(button.tag == ButtonLike::ActionTag::once) {
-            mouseProcesser.moveOut.removeEvent(area);
-            mouseProcesser.moveIn.removeEvent(area);
-            mouseProcesser.click.removeEvent(area);
-            if(imageShower.removeImage(button.name + "_before") | imageShower.removeImage(button.name + "_after")) {
-                imageShower.refreshArea(area);
-            }
-        }
-        button.action();
-        //imageShower.refreshArea(hWnd, area);
-    });
-    imageShower.insertImage(button.before, {p.x, p.y});
-    imageShower.refreshArea(area);
-}
-*/
 
 void Window::MouseProcesser::EventHandler::insertEvent(Area area, std::function<void()> cb) {
     cBs.push_back({area, cb});

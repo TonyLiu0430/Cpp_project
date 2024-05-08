@@ -68,8 +68,6 @@ public:
         class EventHandler {
             std::mutex cBs_Mutex;
             std::vector<std::pair<Area, std::function<void()>>> cBs;
-            //threadSafe <std::vector<std::pair<Area, std::function<void()>>>> cBs_ts;
-
         public:
             void insertEvent(Area, std::function<void()> cb);
             void removeEvent(const Area &area);
@@ -98,7 +96,12 @@ public:
         void refreshInstant();
     };
     ImageShower imageShower{hWnd};
-    //void insertButtonLike(ButtonLike button, Point);
+    class FindWindowException : public std::exception {
+    public:
+        virtual const char* what() const throw() override {
+            return "Window Not Found";
+        }
+    };
 };
 
 
