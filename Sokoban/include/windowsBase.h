@@ -54,7 +54,7 @@ public:
     HWND getHWnd();
     void registerMessageCB(UINT msg, std::function <void(WPARAM, LPARAM)> callBack);
     void registerMessageCB(UINT msg, std::function <void()> callBack);
-    
+    //void createButton(std::string name, Area area, function<void()> callBack);
     class KeyboardProcesser {
         std::map<WPARAM, std::function<void()>> keyCBs;
     public:
@@ -96,6 +96,7 @@ public:
         void refreshInstant();
     };
     ImageShower imageShower{hWnd};
+
     class FindWindowException : public std::exception {
     public:
         virtual const char* what() const throw() override {

@@ -13,7 +13,7 @@ public:
     //ConsoleUserInterface();
     void startPlay(Game<ConsoleUserInterface> *game);
     void showStart();
-    int boardChoose(const std::vector<std::string> &boardList);
+    int boardChoose(const std::vector<std::filesystem::path> &boardList);
     void showBoard(const std::vector<std::vector<GameObj>> &board);
     void end();
     void showWin();

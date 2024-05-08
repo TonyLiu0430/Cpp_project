@@ -57,16 +57,28 @@ public:
     Image* after;
     std::function<void(void)> action;
     const std::string name;
+    const std::string imageName;
     enum class ActionTag {
         once,
         repeat
     };
     ActionTag tag;
-    ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag = ActionTag::once);
+    ButtonLike(std::string imageName, std::function<void(void)> action, ActionTag tag = ActionTag::once);
+    ButtonLike(std::string name, std::string imageName, std::function<void(void)> action, ActionTag tag = ActionTag::once);
 
     static void insertToWindow(Window *window, ButtonLike button, Point p);
     static void deleteFromWindow(Window *window, std::string name);
 };
+
+class ButtonLikeWithText {
+public:
+    ButtonLike button;
+    std::string text;
+    ButtonLikeWithText(std::string text, std::string imageName, std::function<void(void)> action, ButtonLike::ActionTag tag = ButtonLike::ActionTag::once);
+    static void insertToWindow(Window *window, ButtonLikeWithText button, Point p);
+    static void deleteFromWindow(Window *window, std::string name);
+};
+}
 
 
 #endif

@@ -10,10 +10,10 @@ template<class T>
 void Game<T>::start() {
     try {
         ui.showStart();
-        vector<string> boardList = getBoardList();
+        vector<filesystem::path> boardList = getBoardList();
         while(true) {
             int chooseBoardIndex = ui.boardChoose(boardList);
-            string chooseBoard = boardList[chooseBoardIndex];
+            string chooseBoard = boardList[chooseBoardIndex].string();
             loadBoard(chooseBoard);
             ui.startPlay(this);
             ui.end();
@@ -25,7 +25,7 @@ void Game<T>::start() {
 
 template<class T>
 void Game<T>::loadBoard(std::string filename) {
-    cerr << "loadBoard start\n";
+    //cerr << "loadBoard start\n";
     std::ifstream file(filename);
     if (!file) {
         throw Exception(filename + "Map file not found");
@@ -56,7 +56,7 @@ void Game<T>::loadBoard(std::string filename) {
 }
 
 template<class T>
-vector<string> Game<T>::getBoardList() {
+vector<filesystem::path> Game<T>::getBoardList() {
     filesystem::path dirPath = "missions";
     if(!filesystem::exists(dirPath)) {
         throw Exception("missions folder not found");
@@ -65,12 +65,11 @@ vector<string> Game<T>::getBoardList() {
     if(!dir.is_directory()) {
         throw Exception("missions is not a directory");
     }
-    vector<string> boardList;
+    vector<filesystem::path> boardList;
     filesystem::directory_iterator dirIt(dirPath);
     for(auto &p: dirIt) {
         if(p.is_regular_file()) {
-            //cout << ">>>" << p.path().string() << endl;
-            boardList.push_back(p.path().string());
+            boardList.push_back(p);
         }
     }
     return boardList;

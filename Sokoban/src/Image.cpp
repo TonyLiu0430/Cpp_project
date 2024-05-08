@@ -68,8 +68,8 @@ ImageManager::ImageManager() {
     /*Board Choose Button Image*/
     for (int i = 1; i <= 5; i++ ) {
         string imageName = "mission" + to_string(i);
-        images.emplace(imageName + "_before", new Image(imageName + "_before", 70, 70));
-        images.emplace(imageName + "_after", new Image(imageName + "_after", 70, 70));
+        images.emplace(imageName + "_before", new Image(imageName + "_before", 80, 80));
+        images.emplace(imageName + "_after", new Image(imageName + "_after", 80, 80));
     }
     /*Board Choose Button Image*/
     images.emplace("chooseLevel", new Image("chooseLevel"s, Image::statusLen, Image::statusWidth));
@@ -99,25 +99,27 @@ bool ImageManager::hasImage(std::string name) {
     return images.find(name) != images.end();
 }
 
-ButtonLike::ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag): name(name), action(action), tag(tag) {
-    before = imageManager.getImage(name + "_before");
-    after = imageManager.getImage(name + "_after");
+ButtonLike::ButtonLike(std::string name, std::string imageName, std::function<void(void)> action, ActionTag tag): name(name), imageName(imageName), action(action), tag(tag) {
+    before = imageManager.getImage(imageName + "_before");
+    after = imageManager.getImage(imageName + "_after");
     length = before->length;
     width = before->width;
 }
+
+ButtonLike::ButtonLike(std::string name, std::function<void(void)> action, ActionTag tag): ButtonLike(name, name, action, tag) {}
 
 void ButtonLike::insertToWindow(Window *window, ButtonLike button, Point p) {
     Area area({p.x, p.y}, {button.length, button.width});
     buttonAreas.insert({button.name, area});
     window->mouseProcesser.moveIn.insertEvent(area, [=]() {
         if(window->imageShower.removeImage(button.name + "_before")) {
-            window->imageShower.insertImage(button.after, {p.x, p.y});
+            window->imageShower.insertImage(button.name + "_after", button.after, {p.x, p.y});
             window->imageShower.refreshArea(area);
         }
     });
     window->mouseProcesser.moveOut.insertEvent(area, [=]() {
         if(window->imageShower.removeImage(button.name + "_after")) {
-            window->imageShower.insertImage(button.before, {p.x, p.y});
+            window->imageShower.insertImage(button.name + "_before", button.before, {p.x, p.y});
             window->imageShower.refreshArea(area);
         }
     });
@@ -143,6 +145,14 @@ void ButtonLike::deleteFromWindow(Window *window, string name) {
         window->imageShower.refreshArea(area);
     }
     buttonAreas.erase(name);
+}
+
+ButtonLikeWithText::ButtonLikeWithText(std::string text, std::string imageName, std::function<void(void)> action, ButtonLike::ActionTag tag = ButtonLike::ActionTag::once):
+    button(text, imageName, action, tag), text(text) {}
+
+void ButtonLikeWithText::insertToWindow(Window *window, ButtonLikeWithText button, Point p) {
+    ButtonLike::insertToWindow(window, button.button, p);
+    /*TEXT SHOWER*/
 }
 
 #endif

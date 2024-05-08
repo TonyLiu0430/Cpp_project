@@ -125,22 +125,32 @@ void WindowUserInterface::showLose() {
     mainWindow->imageShower.refreshInstant();
 }
 
-int WindowUserInterface::boardChoose(const std::vector<std::string> &boardList) {
+int WindowUserInterface::boardChoose(const vector<filesystem::path> &boardList) {
     int chooseIndex = 0;
     mainWindow->imageShower.insertImage(imageManager.getImage("chooseLevel"), {0, 0});
     mainWindow->imageShower.refreshArea({0, 0, imageManager.getImage("chooseLevel")->length, imageManager.getImage("chooseLevel")->width});
     for(int i = 0; i < boardList.size(); i++) {
-        if(imageManager.hasImage("mission" + to_string(i + 1) + "_before") == false){
-            cerr << "尚未支援超過"<< i + 1 << "個關卡" << endl;
-            cerr << "\t\t" << boardList[i] << "無法顯示\n";
-            continue;
+        string name = boardList[i].filename().string();
+        name = name.substr(0, name.find_last_of('.'));
+        Point coord = {imageManager.getImage("chooseLevel")->length + 50 + i * 100, imageManager.getImage("chooseLevel")->width + 50};
+        cerr << name << endl;
+        if(imageManager.hasImage(name + "_before")) {
+            ButtonLike button(name, [=, &chooseIndex](){
+                cerr << name << " clicked\n";
+                chooseIndex = i;
+                MainProgram::stopMessageLoop();
+            });
+            ButtonLike::insertToWindow(mainWindow, button, coord);
         }
-        ButtonLike button("mission" + to_string(i + 1), [=, &chooseIndex](){
-            cerr << "mission" + to_string(i + 1) << " clicked\n";
-            chooseIndex = i;
-            MainProgram::stopMessageLoop();
-        });
-        ButtonLike::insertToWindow(mainWindow, button, {imageManager.getImage("chooseLevel")->length + 50 + i * 90, imageManager.getImage("chooseLevel")->width + 50});
+    }
+    for(int i = 0; i < boardList.size(); i++) {
+        string name = boardList[i].filename().string();
+        name = name.substr(0, name.find_last_of('.'));
+        Point coord = {imageManager.getImage("chooseLevel")->length + 50 + i * 90, imageManager.getImage("chooseLevel")->width + 50};
+        cerr << name << endl;
+        if(!imageManager.hasImage(name + "_before")) {
+            cerr << name << " not found\n";
+        }
     }
     MainProgram::startMessageLoop();
     /*LOOP OUT*/

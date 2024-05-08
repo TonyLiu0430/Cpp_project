@@ -52,7 +52,7 @@ void ConsoleUserInterface::insertCharCallback(char c, function<void()> callback)
 
 void ConsoleUserInterface::showStart() {
     cout << "歡迎進入倉庫番遊戲" << endl;
-    _getch();
+    getChar();
     /*TODO*/
 }
 
@@ -71,7 +71,7 @@ void ConsoleUserInterface::stopMessageLoop() {
     MsgLoopRunning = false;
 }
 
-int ConsoleUserInterface::boardChoose(const vector<string> &boardList) {
+int ConsoleUserInterface::boardChoose(const vector<std::filesystem::path> &boardList) {
     cout << "請選擇地圖" << endl;
     for(int i = 0; i < boardList.size(); i++) {
         cout << i << ": " << boardList[i] << endl;
@@ -124,15 +124,15 @@ void ConsoleUserInterface::showBoard(const vector<vector<GameObj>> &board) {
 
 void ConsoleUserInterface::end() {
     cout << "遊戲結束" << endl;
-    _getch();
+    getChar();
 }
 
 void ConsoleUserInterface::showWin() {
     cout << "恭喜過關" << endl;
-    _getch();
+    getChar();
 }
 
 void ConsoleUserInterface::showLose() {
     cout << "失敗" << endl;
-    _getch();
+    getChar();
 }

@@ -31,6 +31,7 @@ void MainProgram::stopMessageLoop() {
 
 /*訊息處裡函式*/
 LRESULT MainProgram::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    //cerr << "WindowProc " << hwnd << " " << uMsg << " " << wParam << " " << lParam << endl;
     if(mainWindow == nullptr) {
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
@@ -124,6 +125,30 @@ void Window::createMain(std::string name) {
     ShowWindow(mainWindow->getHWnd(), MainProgram::nCmdShow);
     //cerr << "CREATE MAIN\n";
 }
+
+/*Window* Window::createButton(std::string name, Area area) {
+    Window *button = create(
+        0,                              // Optional window styles.
+        "BUTTON",             // Window class
+        name.c_str(),             // Window text 左上角文字
+        WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,            // Window style
+
+        // Size and position
+        area.x, area.y, area.length, area.width,
+
+        mainWindow->getHWnd(),       // Parent window    
+        NULL,       // Menu
+        MainProgram::hInstance,  // Instance handle
+        NULL        // Additional application data
+    );
+    mainWindow->registerMessageCB(BN_CLICKED, [button](){
+        cout << "On mainWindow Button clicked\n";
+    });
+    button->registerMessageCB(BM_CLICK, [button](){
+        cout << "On Button Button clicked\n";
+    });
+    return button;
+}*/
 
 void Window::remove(Window* window) {
     if(window == nullptr) {
