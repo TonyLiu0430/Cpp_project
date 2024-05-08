@@ -62,6 +62,7 @@ ImageManager::ImageManager() {
     /*Game status Image*/
     images.emplace("win", new Image("win"s, 500, 300));
     images.emplace("lose", new Image("lose"s, 500, 300));
+    images.emplace("pressEnter", new Image("pressEnter"s, 500, 300));
     /*Game status Image*/
 
     /*Board Choose Button Image*/

@@ -67,7 +67,7 @@ public:
     void move(const Index &from, const Index &to);
     void playMove(const Index &to);
     bool isWin();
-    /*TODO*/ bool isLost() { return false; };
+    bool isLose();
     bool isSafe(const Index &index);
     bool isSafe(int i, int j);
 };

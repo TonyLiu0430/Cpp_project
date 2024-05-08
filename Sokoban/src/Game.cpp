@@ -87,7 +87,7 @@ void Game<T>::move(const Index &from, const Index &direction) {
     if(getGameObj(from + direction).isWall()) {
         throw InvalidMoveException();
     }
-    if(getGameObj(from + direction).isBox()) {
+    if(getGameObj(from).isPlayer() && getGameObj(from + direction).isBox()) {
         move(from + direction, direction);
         swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
         return;
@@ -96,7 +96,7 @@ void Game<T>::move(const Index &from, const Index &direction) {
         swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
         return;
     }
-    
+    throw InvalidMoveException();
 }
 
 template<class T>
@@ -132,6 +132,33 @@ bool Game<T>::isWin() {
 }
 
 template<class T>
+bool Game<T>::isLose() {
+    int unsolvedCheckPointCnt = 0;
+    int unsolvedBoxCnt = 0;
+    int stuckBoxCnt = 0;
+    for (int i = 0; i < board.size(); i++ ) {
+        for (int j = 0; j < board[i].size(); j++ ) {
+            if(board[i][j].isCheckPoint() && board[i][j].isBox()) {
+                continue;
+            }
+            if(board[i][j].isCheckPoint()) {
+                unsolvedCheckPointCnt++;
+            }
+            if(board[i][j].isBox()) {
+                unsolvedBoxCnt++;
+                bool i_stuck = (!isSafe(i - 1, j) || board[i - 1][j].isWall()) || (!isSafe(i + 1, j) || board[i + 1][j].isWall());
+                bool j_stuck = (!isSafe(i, j - 1) || board[i][j - 1].isWall()) || (!isSafe(i, j + 1) || board[i][j + 1].isWall());
+                if(i_stuck && j_stuck) {
+                    stuckBoxCnt++;
+                }
+            }
+        }
+    }
+    int freeBoxCnt = unsolvedBoxCnt - stuckBoxCnt;
+    return  freeBoxCnt < unsolvedCheckPointCnt;
+}
+
+template<class T>
 void Game<T>::playMove(const Index &to) {
     try {
         move(player, to);
@@ -144,7 +171,7 @@ void Game<T>::playMove(const Index &to) {
         ui.showWin();
         ui.stopMessageLoop();
     }
-    if(isLost()) {
+    if(isLose()) {
         ui.showLose();
         ui.stopMessageLoop();
     }

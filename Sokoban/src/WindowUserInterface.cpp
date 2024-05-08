@@ -120,12 +120,14 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
 void WindowUserInterface::showWin() {
     ButtonLike::deleteFromWindow(mainWindow, "surrender");
     mainWindow->imageShower.insertImage("win", imageManager.getImage("win"), {Image::statusLen + 300, Image::statusWidth + 300});
+    mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
     mainWindow->imageShower.refreshInstant();
 }
 
 void WindowUserInterface::showLose() {
     ButtonLike::deleteFromWindow(mainWindow, "surrender");
     mainWindow->imageShower.insertImage("lose", imageManager.getImage("lose"), {Image::statusLen + 300, Image::statusWidth + 300});
+    mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
     mainWindow->imageShower.refreshInstant();
 }
 
