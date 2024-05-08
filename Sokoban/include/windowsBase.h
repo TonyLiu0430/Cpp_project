@@ -19,7 +19,7 @@
 #include "util.h"
 
 
-class ButtonLike;
+
 class Image;
 
 class MainProgram {
