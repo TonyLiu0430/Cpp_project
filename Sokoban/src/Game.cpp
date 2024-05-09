@@ -25,14 +25,12 @@ void Game<T>::start() {
 
 template<class T>
 void Game<T>::loadBoard(std::string filename) {
-    //cerr << "loadBoard start\n";
     std::ifstream file(filename);
     if (!file) {
         throw Exception(filename + "Map file not found");
     }
     int n, m;
     file >> n >> m;
-    cerr << n << m;
     board.clear();
     board.resize(n, std::vector<GameObj>(m));
     for(int i = 0; i < n; i++) {
@@ -45,7 +43,6 @@ void Game<T>::loadBoard(std::string filename) {
             }
         }
     }
-    cerr << "loadBoard success\n";
     /*
     /(牆)
     -(道路)

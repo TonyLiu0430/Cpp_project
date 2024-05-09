@@ -31,7 +31,6 @@ void MainProgram::stopMessageLoop() {
 
 /*訊息處裡函式*/
 LRESULT MainProgram::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    //cerr << "WindowProc " << hwnd << " " << uMsg << " " << wParam << " " << lParam << endl;
     if(mainWindow == nullptr) {
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }

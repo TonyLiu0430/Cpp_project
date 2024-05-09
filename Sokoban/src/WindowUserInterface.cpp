@@ -43,9 +43,7 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
 }
 
 void WindowUserInterface::end() {
-    cerr << "end";
     mainWindow->keyboardProcesser.insertEvent(VK_RETURN, []() {
-        cerr << "繼續";
         MainProgram::stopMessageLoop(); 
     });
     startMessageLoop();
@@ -137,9 +135,7 @@ int WindowUserInterface::boardChoose(const vector<filesystem::path> &boardList) 
         if(imageManager.hasImage(name + "_before")) {
             Point coord = {imageManager.getImage("chooseLevel")->length + 50 + hasImageCnt * 100, imageManager.getImage("chooseLevel")->width + 50};
             hasImageCnt++;
-            cerr << name << endl;
             ButtonLike button(name, [=, &chooseIndex](){
-                cerr << name << " clicked\n";
                 chooseIndex = i;
                 MainProgram::stopMessageLoop();
             });
@@ -152,9 +148,7 @@ int WindowUserInterface::boardChoose(const vector<filesystem::path> &boardList) 
         if(!imageManager.hasImage(name + "_before")) {
             Point coord = {imageManager.getImage("chooseLevel")->length + 50 + defaultCnt * 100, imageManager.getImage("chooseLevel")->width + 150};
             defaultCnt++;
-            cerr << name << endl;
             ButtonLike button(name, "default", [=, &chooseIndex](){
-                    cerr << name << " clicked\n";
                     chooseIndex = i;
                     MainProgram::stopMessageLoop();
                 }, 

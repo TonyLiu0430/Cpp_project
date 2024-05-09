@@ -13,7 +13,9 @@ static char getChar() {
     #ifdef _WIN32
     return _getch();
     #else
-    return getchar();
+    string str;
+    cin >> str;
+    return str[0];
     #endif
 }
 
