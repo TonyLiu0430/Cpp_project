@@ -24,6 +24,7 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
     const WPARAM VK_A = 0x41;
     const WPARAM VK_S = 0x53;
     const WPARAM VK_D = 0x44;
+    const WPARAM VK_R = 0x52;
     mainWindow->keyboardProcesser.insertEvent(VK_W, [=]() {
         game->playMove({-1, 0});
     });
@@ -35,6 +36,10 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
     });
     mainWindow->keyboardProcesser.insertEvent(VK_D, [=]() {
         game->playMove({0, 1});
+    });
+    mainWindow->keyboardProcesser.insertEvent(VK_R, [=](){
+        cerr << "上一動" << endl;
+        game->retToPrev(); 
     });
     showBoard(game->board, true);
     MainProgram::startMessageLoop();

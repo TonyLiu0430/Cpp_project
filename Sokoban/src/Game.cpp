@@ -12,9 +12,13 @@ void Game<T>::start() {
         ui.showStart();
         vector<filesystem::path> boardList = getBoardList();
         while(true) {
+            playerRecord.clear();
+            boardRecord.clear();
             int chooseBoardIndex = ui.boardChoose(boardList);
             string chooseBoard = boardList[chooseBoardIndex].string();
             loadBoard(chooseBoard);
+            playerRecord.push_back(player);
+            boardRecord.push_back(board);
             ui.startPlay(this);
             ui.end();
         }
@@ -69,6 +73,11 @@ vector<filesystem::path> Game<T>::getBoardList() {
             boardList.push_back(p);
         }
     }
+    sort(boardList.begin(), boardList.end(), [](const filesystem::path &a, const filesystem::path &b) {
+        string as = a.filename().string();
+        string bs = b.filename().string();
+        return as.size() == bs.size() ? as < bs : as.size() < bs.size();
+    });
     return boardList;
 }
 
@@ -162,6 +171,8 @@ void Game<T>::playMove(const Index &to) {
     try {
         move(player, to);
         player += to;
+        playerRecord.push_back(player);
+        boardRecord.push_back(board);
     } catch (InvalidMoveException &e) {
         return;
     }
@@ -174,6 +185,18 @@ void Game<T>::playMove(const Index &to) {
         ui.showLose();
         ui.stopMessageLoop();
     }
+}
+
+template<class T>
+void Game<T>::retToPrev() {
+    if(boardRecord.size() <= 1) {
+        return;
+    }
+    boardRecord.pop_back();
+    playerRecord.pop_back();
+    player = playerRecord.back();
+    board = boardRecord.back();
+    ui.showBoard(board);
 }
 
 

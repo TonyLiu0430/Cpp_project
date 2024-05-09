@@ -7,7 +7,7 @@
 #include <filesystem>
 
 class GameObj {
-public:/*DEBUG*/
+private:
     int data;
     inline const static int checkPoint  = 0b10000;
     inline const static int box         = 0b01000;
@@ -44,6 +44,8 @@ struct Index{
 
 template<class UserInterface_Type>
 class Game {
+    std::vector<std::vector<std::vector<GameObj>>> boardRecord;
+    std::vector<Index> playerRecord;
     UserInterface_Type ui;
 public:
     std::vector<std::vector<GameObj>> board;
@@ -62,6 +64,7 @@ public:
         }
     };
 
+    void retToPrev();
     void start();
     void loadBoard(std::string filename);
     std::vector<std::filesystem::path> getBoardList();
