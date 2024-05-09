@@ -62,23 +62,18 @@ public:
         once,
         repeat
     };
+    enum class ButtonStyle {
+        onlyImage,
+        withText
+    };
     ActionTag tag;
+    ButtonStyle style;
     ButtonLike(std::string imageName, std::function<void(void)> action, ActionTag tag = ActionTag::once);
-    ButtonLike(std::string name, std::string imageName, std::function<void(void)> action, ActionTag tag = ActionTag::once);
+    ButtonLike(std::string name, std::string imageName, std::function<void(void)> action, ActionTag tag = ActionTag::once, ButtonStyle style = ButtonStyle::onlyImage);
 
     static void insertToWindow(Window *window, ButtonLike button, Point p);
     static void deleteFromWindow(Window *window, std::string name);
 };
-
-class ButtonLikeWithText {
-public:
-    ButtonLike button;
-    std::string text;
-    ButtonLikeWithText(std::string text, std::string imageName, std::function<void(void)> action, ButtonLike::ActionTag tag = ButtonLike::ActionTag::once);
-    static void insertToWindow(Window *window, ButtonLikeWithText button, Point p);
-    static void deleteFromWindow(Window *window, std::string name);
-};
-}
 
 
 #endif

@@ -123,32 +123,7 @@ void Window::createMain(std::string name) {
         );
 
     ShowWindow(mainWindow->getHWnd(), MainProgram::nCmdShow);
-    //cerr << "CREATE MAIN\n";
 }
-
-/*Window* Window::createButton(std::string name, Area area) {
-    Window *button = create(
-        0,                              // Optional window styles.
-        "BUTTON",             // Window class
-        name.c_str(),             // Window text 左上角文字
-        WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,            // Window style
-
-        // Size and position
-        area.x, area.y, area.length, area.width,
-
-        mainWindow->getHWnd(),       // Parent window    
-        NULL,       // Menu
-        MainProgram::hInstance,  // Instance handle
-        NULL        // Additional application data
-    );
-    mainWindow->registerMessageCB(BN_CLICKED, [button](){
-        cout << "On mainWindow Button clicked\n";
-    });
-    button->registerMessageCB(BM_CLICK, [button](){
-        cout << "On Button Button clicked\n";
-    });
-    return button;
-}*/
 
 void Window::remove(Window* window) {
     if(window == nullptr) {
@@ -186,6 +161,7 @@ LRESULT Window::process(UINT uMsg, WPARAM wParam, LPARAM lParam) {
             FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW + 1)); /*填底色*/
             /**********PRINT****************/
             imageShower.show(hdc);
+            textShower.show(hdc);
             /**********PRINT****************/
             EndPaint(hWnd, &ps);
             //cout << "print\n";
@@ -321,13 +297,11 @@ void Window::ImageShower::clear() {
 }
 
 int Window::ImageShower::insertImage(Image* image, const Point &p) {
-    /*TODO改成用數字定位*/
     images[image->name] = {image, p};
     return 1;
 }
 
 int Window::ImageShower::insertImage(string name, Image* image, const Point &p) {
-    /*TODO改成用數字定位*/
     images[name] = {image, p};
     return 1;
 }
@@ -350,4 +324,35 @@ void Window::ImageShower::refreshArea(const Area &area) {
     InvalidateRect(hWnd, &rect, true);
     UpdateWindow(hWnd);
 }
+
+void Window::TextShower::show(HDC hdc) {
+    for(auto &[text, area]: texts) {
+        RECT rect = {(LONG)area.x, (LONG)area.y, (LONG)area.x + area.length, (LONG)area.y + area.width};
+        DrawText(hdc, text.c_str(), -1, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+    }
+}
+
+void Window::TextShower::clear() {
+    texts.clear();
+}
+
+int Window::TextShower::insertText(const std::string &text, const Area &area) {
+    texts[text] = area;
+    return 1;
+}
+
+int Window::TextShower::removeText(std::string text) {
+    if(texts.find(text) != texts.end()) {
+        texts.erase(text);
+        return 1;
+    }
+    return 0;
+}
+
+void Window::TextShower::refreshArea(const Area &area) {
+    RECT rect = {(LONG)area.x, (LONG)area.y, (LONG)area.x + area.length, (LONG)area.y + area.width};
+    InvalidateRect(hWnd, &rect, true);
+    UpdateWindow(hWnd);
+}
+
 #endif

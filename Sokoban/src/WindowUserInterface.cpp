@@ -127,14 +127,17 @@ void WindowUserInterface::showLose() {
 
 int WindowUserInterface::boardChoose(const vector<filesystem::path> &boardList) {
     int chooseIndex = 0;
+    int hasImageCnt = 0;
+    int defaultCnt = 0;
     mainWindow->imageShower.insertImage(imageManager.getImage("chooseLevel"), {0, 0});
     mainWindow->imageShower.refreshArea({0, 0, imageManager.getImage("chooseLevel")->length, imageManager.getImage("chooseLevel")->width});
     for(int i = 0; i < boardList.size(); i++) {
         string name = boardList[i].filename().string();
         name = name.substr(0, name.find_last_of('.'));
-        Point coord = {imageManager.getImage("chooseLevel")->length + 50 + i * 100, imageManager.getImage("chooseLevel")->width + 50};
-        cerr << name << endl;
         if(imageManager.hasImage(name + "_before")) {
+            Point coord = {imageManager.getImage("chooseLevel")->length + 50 + hasImageCnt * 100, imageManager.getImage("chooseLevel")->width + 50};
+            hasImageCnt++;
+            cerr << name << endl;
             ButtonLike button(name, [=, &chooseIndex](){
                 cerr << name << " clicked\n";
                 chooseIndex = i;
@@ -146,14 +149,24 @@ int WindowUserInterface::boardChoose(const vector<filesystem::path> &boardList) 
     for(int i = 0; i < boardList.size(); i++) {
         string name = boardList[i].filename().string();
         name = name.substr(0, name.find_last_of('.'));
-        Point coord = {imageManager.getImage("chooseLevel")->length + 50 + i * 90, imageManager.getImage("chooseLevel")->width + 50};
-        cerr << name << endl;
         if(!imageManager.hasImage(name + "_before")) {
-            cerr << name << " not found\n";
+            Point coord = {imageManager.getImage("chooseLevel")->length + 50 + defaultCnt * 100, imageManager.getImage("chooseLevel")->width + 150};
+            defaultCnt++;
+            cerr << name << endl;
+            ButtonLike button(name, "default", [=, &chooseIndex](){
+                    cerr << name << " clicked\n";
+                    chooseIndex = i;
+                    MainProgram::stopMessageLoop();
+                }, 
+                ButtonLike::ActionTag::once, 
+                ButtonLike::ButtonStyle::withText
+            );
+            ButtonLike::insertToWindow(mainWindow, button, coord);
         }
     }
     MainProgram::startMessageLoop();
     /*LOOP OUT*/
+    mainWindow->textShower.clear();
     mainWindow->imageShower.clear();
     mainWindow->imageShower.refreshInstant();
     return chooseIndex;

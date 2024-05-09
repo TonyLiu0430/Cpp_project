@@ -81,6 +81,7 @@ public:
         EventHandler click, moveIn, moveOut{std::bind(&Area::isOut, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)};
         bool process(UINT uMsg, WPARAM wParam, LPARAM lParam);
     }mouseProcesser;
+
     class ImageShower {
     public:
         HWND &hWnd;
@@ -90,12 +91,26 @@ public:
         void show(HDC hdc);
         void clear();
         int insertImage(Image* image, const Point &p);
-        /*TEMP*/ int insertImage(std::string name, Image *image, const Point &p);
+        int insertImage(std::string name, Image *image, const Point &p);
         int removeImage(std::string name);
         void refreshArea(const Area &area);
         void refreshInstant();
     };
     ImageShower imageShower{hWnd};
+
+    class TextShower {
+    public:
+        HWND &hWnd;
+        explicit TextShower(HWND &hWnd): hWnd(hWnd) {};
+        TextShower& operator=(const TextShower&) = delete;
+        std::map<std::string, Area> texts;
+        void show(HDC hdc);
+        void clear();
+        int insertText(const std::string &text, const Area &area);
+        int removeText(std::string name);
+        void refreshArea(const Area &area);
+    };
+    TextShower textShower{hWnd};
 
     class FindWindowException : public std::exception {
     public:
