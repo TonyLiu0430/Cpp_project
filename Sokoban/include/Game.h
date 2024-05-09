@@ -22,6 +22,7 @@ public:
     bool isBox() const;
     bool isCheckPoint() const;
     bool isPlayer() const;
+    bool operator!=(const GameObj &other) const;
     friend void swapGameObj(GameObj &a, GameObj &b);
 };
 

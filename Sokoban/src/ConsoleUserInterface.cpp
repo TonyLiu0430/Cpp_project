@@ -15,7 +15,7 @@ static char getChar() {
     #else
     string str;
     cin >> str;
-    return str[0];
+    return str.size() == 0 ? ' ' : str[0];
     #endif
 }
 

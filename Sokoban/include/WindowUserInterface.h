@@ -11,6 +11,7 @@
 
 
 class WindowUserInterface {
+    std::vector<std::vector<GameObj>> prevBoard;
 public:
     WindowUserInterface();
     void startPlay(Game<WindowUserInterface> *game);

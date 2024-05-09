@@ -73,40 +73,48 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
 
     for(int i = 0; i < board.size(); i++) {
         for(int j = 0; j < board[i].size(); j++) {
-            Image *image = nullptr;
-            if(board[i][j].isWall()) {
-                image = imageManager.getImage("wall");
-            } 
-            else if(board[i][j].isRoad()) {
-                image = imageManager.getImage("road");
-            }
-            else if(board[i][j].isBox()) {
-                if(board[i][j].isCheckPoint()) {
-                    image = imageManager.getImage("boxOnCheckPoint");
+            if(init || board[i][j] != prevBoard[i][j]) {
+                Image *image = nullptr;
+                if(board[i][j].isWall()) {
+                    image = imageManager.getImage("wall");
+                } 
+                else if(board[i][j].isRoad()) {
+                    image = imageManager.getImage("road");
                 }
-                else {
-                    image = imageManager.getImage("box");
+                else if(board[i][j].isBox()) {
+                    if(board[i][j].isCheckPoint()) {
+                        image = imageManager.getImage("boxOnCheckPoint");
+                    }
+                    else {
+                        image = imageManager.getImage("box");
+                    }
+                }
+                else if(board[i][j].isPlayer()) {
+                    if(board[i][j].isCheckPoint()) {
+                        image = imageManager.getImage("playerOnCheckPoint");
+                    }
+                    else {
+                        image = imageManager.getImage("player");
+                    }
+                }
+                else if(board[i][j].isCheckPoint()) {
+                    image = imageManager.getImage("checkPoint");
+                }
+                if(image == nullptr) {
+                    throw Exception("Invalid GameObj Data");
+                }
+                Point p = {Image::statusLen + 30 + j * Image::GameObjLen, Image::statusWidth + 30 + i * Image::GameObjLen};
+                mainWindow->imageShower.insertImage(to_string(i) + to_string(j), image, p);
+                if(!init) {
+                    mainWindow->imageShower.refreshArea({p, {Image::GameObjLen, Image::GameObjLen}});
                 }
             }
-            else if(board[i][j].isPlayer()) {
-                if(board[i][j].isCheckPoint()) {
-                    image = imageManager.getImage("playerOnCheckPoint");
-                }
-                else {
-                    image = imageManager.getImage("player");
-                }
-            }
-            else if(board[i][j].isCheckPoint()) {
-                image = imageManager.getImage("checkPoint");
-            }
-            if(image == nullptr) {
-                throw Exception("Invalid GameObj Data");
-            }
-            Point p = {Image::statusLen + 30 + j * Image::GameObjLen, Image::statusWidth + 30 + i * Image::GameObjLen};
-            mainWindow->imageShower.insertImage(to_string(i) + to_string(j), image, p);
         }
     }
-    mainWindow->imageShower.refreshInstant();
+    if(init) {
+        mainWindow->imageShower.refreshInstant();
+    }
+    this->prevBoard = board;
 }
 
 void WindowUserInterface::showWin() {

@@ -222,6 +222,10 @@ bool GameObj::isPlayer() const {
     return (data & player) != 0;
 }
 
+bool GameObj::operator!=(const GameObj &other) const {
+    return data != other.data;
+}
+
 
 void swapGameObj(GameObj &a, GameObj &b) {
     int aCpFlag = a.data & GameObj::checkPoint;
