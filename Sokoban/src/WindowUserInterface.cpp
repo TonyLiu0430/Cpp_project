@@ -70,7 +70,6 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
         });
         ButtonLike::insertToWindow(mainWindow, surrender, {0, Image::statusWidth + 50});
     }
-
     for(int i = 0; i < board.size(); i++) {
         for(int j = 0; j < board[i].size(); j++) {
             if(init || board[i][j] != prevBoard[i][j]) {
@@ -104,7 +103,7 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
                     throw Exception("Invalid GameObj Data");
                 }
                 Point p = {Image::statusLen + 30 + j * Image::GameObjLen, Image::statusWidth + 30 + i * Image::GameObjLen};
-                mainWindow->imageShower.insertImage(to_string(i) + to_string(j), image, p);
+                mainWindow->imageShower.insertImage(to_string(i) + "-" + to_string(j), image, p);
                 if(!init) {
                     mainWindow->imageShower.refreshArea({p, {Image::GameObjLen, Image::GameObjLen}});
                 }

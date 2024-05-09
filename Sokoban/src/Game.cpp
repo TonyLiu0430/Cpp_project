@@ -88,6 +88,9 @@ void Game<T>::move(const Index &from, const Index &direction) {
         swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
         return;
     }
+    else if(getGameObj(from).isBox() && getGameObj(from + direction).isBox()) {
+        throw InvalidMoveException();
+    }
     if(getGameObj(from + direction).isRoad() || getGameObj(from + direction).isCheckPoint()) {
         swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
         return;
@@ -196,7 +199,10 @@ GameObj::GameObj(char input) {
     } 
     else if(input == '2') {
         data = checkPoint;
-    } 
+    }
+    else if(input == '3') {
+        data = box | checkPoint;
+    }
     else {
         throw Exception("Invalid input");
     }
