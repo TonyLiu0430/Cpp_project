@@ -1,13 +1,7 @@
 #pragma once
 #ifdef AWG
-#ifdef UNICODE
-#undef UNICODE
-#endif
-#ifndef ASCII
-#define ASCII
-#endif
 
-#include <windows.h>
+#include "windowsInclude.h"
 #include <string>
 #include <map>
 #include <utility>

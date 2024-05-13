@@ -5,6 +5,7 @@
 #include "util.h"
 #include "Image.h"
 
+
 #define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
 #define GET_Y_LPARAM(lp) ((int)(short)HIWORD(lp))
 using std::cout;
@@ -107,13 +108,13 @@ void Window::createMain(std::string name) {
     // Create the window.
 
     mainWindow = create(
-        0,                              // Optional window styles.
+        WS_EX_COMPOSITED,                              // Optional window styles.
         name.c_str(),             // Window class
         name.c_str(),             // Window text 左上角文字
         WS_OVERLAPPEDWINDOW,            // Window style
 
         // Size and position
-        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+        0, 0, 1920, 1080,
 
         NULL,       // Parent window    
         NULL,       // Menu
@@ -122,6 +123,7 @@ void Window::createMain(std::string name) {
         );
 
     ShowWindow(mainWindow->getHWnd(), MainProgram::nCmdShow);
+    SetProcessDPIAware();
 }
 
 void Window::remove(Window* window) {
