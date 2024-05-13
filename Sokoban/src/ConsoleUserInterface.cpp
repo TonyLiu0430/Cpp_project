@@ -92,7 +92,7 @@ void ConsoleUserInterface::stopMessageLoop() {
     MsgLoopRunning = false;
 }
 
-int ConsoleUserInterface::boardChoose(const vector<std::filesystem::path> &boardList) {
+int ConsoleUserInterface::boardChoose(const vector<fs::path> &boardList) {
     cout << "請選擇地圖" << endl;
     for(int i = 0; i < boardList.size(); i++) {
         cout << i + 1 << ": " << boardList[i].filename().string() << endl;

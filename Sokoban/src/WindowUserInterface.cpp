@@ -133,7 +133,7 @@ void WindowUserInterface::showLose() {
     mainWindow->imageShower.refreshInstant();
 }
 
-int WindowUserInterface::boardChoose(const vector<filesystem::path> &boardList) {
+int WindowUserInterface::boardChoose(const vector<fs::path> &boardList) {
     int chooseIndex = 0;
     int hasImageCnt = 0;
     int defaultCnt = 0;

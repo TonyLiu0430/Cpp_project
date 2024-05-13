@@ -2,6 +2,7 @@
 #include "util.h"
 #include "ConsoleUserInterface.h"
 #include "WindowUserInterface.h"
+#include "filesystemCompatible.h"
 #include <bits/stdc++.h>
 using std::cout;
 using namespace std;
@@ -10,7 +11,7 @@ template<class T>
 void Game<T>::start() {
     try {
         ui.showStart();
-        vector<filesystem::path> boardList = getBoardList();
+        vector<fs::path> boardList = getBoardList("missions");
         while(true) {
             playerRecord.clear();
             boardRecord.clear();
@@ -54,31 +55,6 @@ void Game<T>::loadBoard(std::string filename) {
     1(箱子)
     2(終點)
     */
-}
-
-template<class T>
-vector<filesystem::path> Game<T>::getBoardList() {
-    filesystem::path dirPath = "missions";
-    if(!filesystem::exists(dirPath)) {
-        throw Exception("missions folder not found");
-    }
-    filesystem::directory_entry dir(dirPath);
-    if(!dir.is_directory()) {
-        throw Exception("missions is not a directory");
-    }
-    vector<filesystem::path> boardList;
-    filesystem::directory_iterator dirIt(dirPath);
-    for(auto &p: dirIt) {
-        if(p.is_regular_file()) {
-            boardList.push_back(p);
-        }
-    }
-    sort(boardList.begin(), boardList.end(), [](const filesystem::path &a, const filesystem::path &b) {
-        string as = a.filename().string();
-        string bs = b.filename().string();
-        return as.size() == bs.size() ? as < bs : as.size() < bs.size();
-    });
-    return boardList;
 }
 
 template<class T>
