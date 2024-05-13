@@ -16,7 +16,7 @@ void MainProgram::startMessageLoop(){
     // Run the message loop.
     /*  消息迴圈  */
     isRunning = true;
-    cout << "start message loop\n";
+    //cout << "start message loop\n";
     MSG msg = {};
     while (isRunning && GetMessage(&msg, NULL, 0, 0) > 0) {
         TranslateMessage(&msg);

@@ -41,9 +41,17 @@ void ConsoleUserInterface::startPlay(Game<ConsoleUserInterface> *game) {
     insertCharCallback('d', [=]() {
         game->playMove({0, 1});
     });
+    insertCharCallback('r', [=](){
+        game->retToPrev();
+    });
+    insertCharCallback('q', [=](){
+        showLose();
+        stopMessageLoop();
+    });
     showBoard(game->board);
     startMessageLoop();
-
+    /*Loop out*/
+    charCallback.clear();
     clearScreen();
 }
 
@@ -54,7 +62,18 @@ void ConsoleUserInterface::insertCharCallback(char c, function<void()> callback)
 
 void ConsoleUserInterface::showStart() {
     cout << "歡迎進入倉庫番遊戲" << endl;
+    cout << endl;
+    cout << "按任意鍵繼續..." << endl;
     getChar();
+    clearScreen();
+    cout << "操作說明:" << endl;
+    cout << "使用wasd控制人物移動" << endl;
+    cout << "r: 上一步" << endl;
+    cout << "q: 投降" << endl;
+    cout << endl;
+    cout << "按任意鍵繼續..." << endl;
+    getChar();
+
     /*TODO*/
 }
 
@@ -76,11 +95,15 @@ void ConsoleUserInterface::stopMessageLoop() {
 int ConsoleUserInterface::boardChoose(const vector<std::filesystem::path> &boardList) {
     cout << "請選擇地圖" << endl;
     for(int i = 0; i < boardList.size(); i++) {
-        cout << i << ": " << boardList[i] << endl;
+        cout << i + 1 << ": " << boardList[i].filename().string() << endl;
     }
     int choose;
     cin >> choose;
-    return choose;
+    while(choose < 1 || choose > boardList.size()) {
+        cout << "請輸入範圍內數字 : " << 1 << " ~ " << boardList.size() << endl;
+        cin >> choose;
+    }
+    return choose - 1;
 }
 /*
     /(牆)
@@ -126,15 +149,24 @@ void ConsoleUserInterface::showBoard(const vector<vector<GameObj>> &board) {
 
 void ConsoleUserInterface::end() {
     cout << "遊戲結束" << endl;
+    cout << endl;
+    cout << "按任意鍵繼續..." << endl;
     getChar();
+    clearScreen();
 }
 
 void ConsoleUserInterface::showWin() {
     cout << "恭喜過關" << endl;
+    cout << endl;
+    cout << "按任意鍵繼續..." << endl;
     getChar();
+    clearScreen();
 }
 
 void ConsoleUserInterface::showLose() {
     cout << "失敗" << endl;
+    cout << endl;
+    cout << "按任意鍵繼續..." << endl;
     getChar();
+    clearScreen();
 }

@@ -7,7 +7,6 @@ using std::cout;
 
 
 WindowUserInterface::WindowUserInterface() {
-    cout << "Window UserInterface start" << endl;
     Window::createMain("SOKOBAN");
 }
 
@@ -38,11 +37,10 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
         game->playMove({0, 1});
     });
     mainWindow->keyboardProcesser.insertEvent(VK_R, [=](){
-        cerr << "上一動" << endl;
         game->retToPrev(); 
     });
     showBoard(game->board, true);
-    MainProgram::startMessageLoop();
+    startMessageLoop();
     /*Loop out*/
     mainWindow->keyboardProcesser.clear();
 }
@@ -170,7 +168,7 @@ int WindowUserInterface::boardChoose(const vector<filesystem::path> &boardList) 
             ButtonLike::insertToWindow(mainWindow, button, coord);
         }
     }
-    MainProgram::startMessageLoop();
+    startMessageLoop();
     /*LOOP OUT*/
     mainWindow->textShower.clear();
     mainWindow->imageShower.clear();
