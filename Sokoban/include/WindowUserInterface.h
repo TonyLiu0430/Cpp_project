@@ -1,7 +1,7 @@
 #pragma once
 #ifdef AWG
 
-//#include "UserInterface.hpp"
+
 #include "windowsBase.h"
 #include <vector>
 #include <Game.h>
@@ -23,6 +23,7 @@ public:
     void showLose();
     void startMessageLoop();
     void stopMessageLoop();
+    void stopProgram();
 };
 
 #endif

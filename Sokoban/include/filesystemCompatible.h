@@ -3,8 +3,10 @@
 #include <vector>
 #include <string>
 
+#ifndef FILESYSTEM_SUPPORTED
 #if defined(__has_include) && __has_include(<filesystem>)
 #define FILESYSTEM_SUPPORTED 1
+#endif
 #endif
 
 #ifdef FILESYSTEM_SUPPORTED
@@ -32,7 +34,7 @@ namespace fs {
 }
 
 #ifndef _WIN32
-#error LINUX_OR_MACOS_NOT_SUPPORTED_PLEASE_USE_NEWER_COMPILER_BY_SUPPORTED_C++17_FILESYSTEM
+#error LINUX OR MACOS NOT SUPPORTED PLEASE USE NEWER COMPILER BY SUPPORTED C++17 STD::FILESYSTEM
 #endif
 
 #endif // if defined(__has_include) && __has_include(<filesystem>)

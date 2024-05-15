@@ -21,4 +21,5 @@ public:
     void showLose();
     void startMessageLoop();
     void stopMessageLoop();
+    void stopProgram() {};
 };

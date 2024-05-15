@@ -24,6 +24,7 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
     const WPARAM VK_S = 0x53;
     const WPARAM VK_D = 0x44;
     const WPARAM VK_R = 0x52;
+    const WPARAM VK_Q = 0x51;
     mainWindow->keyboardProcesser.insertEvent(VK_W, [=]() {
         game->playMove({-1, 0});
     });
@@ -39,6 +40,16 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
     mainWindow->keyboardProcesser.insertEvent(VK_R, [=](){
         game->retToPrev(); 
     });
+    mainWindow->keyboardProcesser.insertEvent(VK_Q, [=](){
+        showLose();
+        MainProgram::stopMessageLoop(); 
+    });
+
+    ButtonLike ret("return", [=](){
+        game->retToPrev(); 
+    }, ButtonLike::ActionTag::repeat);
+    ButtonLike::insertToWindow(mainWindow, ret, {0, Image::statusWidth + 50});
+
     showBoard(game->board, true);
     startMessageLoop();
     /*Loop out*/
@@ -71,7 +82,8 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
             showLose();
             MainProgram::stopMessageLoop(); 
         });
-        ButtonLike::insertToWindow(mainWindow, surrender, {0, Image::statusWidth + 50});
+        ButtonLike::insertToWindow(mainWindow, surrender, {0, Image::statusWidth + 250});
+        /*return button TODO*/
     }
     for(int i = 0; i < board.size(); i++) {
         for(int j = 0; j < board[i].size(); j++) {
@@ -121,6 +133,7 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
 
 void WindowUserInterface::showWin() {
     ButtonLike::deleteFromWindow(mainWindow, "surrender");
+    ButtonLike::deleteFromWindow(mainWindow, "return");
     mainWindow->imageShower.insertImage("win", imageManager.getImage("win"), {Image::statusLen + 300, Image::statusWidth + 300});
     mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
     mainWindow->imageShower.refreshInstant();
@@ -128,6 +141,7 @@ void WindowUserInterface::showWin() {
 
 void WindowUserInterface::showLose() {
     ButtonLike::deleteFromWindow(mainWindow, "surrender");
+    ButtonLike::deleteFromWindow(mainWindow, "return");
     mainWindow->imageShower.insertImage("lose", imageManager.getImage("lose"), {Image::statusLen + 300, Image::statusWidth + 300});
     mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
     mainWindow->imageShower.refreshInstant();
@@ -174,6 +188,10 @@ int WindowUserInterface::boardChoose(const vector<fs::path> &boardList) {
     mainWindow->imageShower.clear();
     mainWindow->imageShower.refreshInstant();
     return chooseIndex;
+}
+
+void WindowUserInterface::stopProgram() {
+    PostQuitMessage(0);
 }
 
 

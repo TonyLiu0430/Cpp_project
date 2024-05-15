@@ -81,6 +81,9 @@ ImageManager::ImageManager() {
     /*Button*/
     images.emplace("surrender_before", new Image("surrender_before"s, 150, 150));
     images.emplace("surrender_after", new Image("surrender_after"s, 150, 150));
+    //
+    images.emplace("return_before", new Image("return_before"s, 150, 100));
+    images.emplace("return_after", new Image("return_after"s, 150, 100));
     /*Button*/
 }
 

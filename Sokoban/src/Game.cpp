@@ -13,17 +13,15 @@ void Game<T>::start() {
         ui.showStart();
         vector<fs::path> boardList = getBoardList("missions");
         while(true) {
-            playerRecord.clear();
-            boardRecord.clear();
+            moveRecord.clear();
             int chooseBoardIndex = ui.boardChoose(boardList);
             string chooseBoard = boardList[chooseBoardIndex].string();
             loadBoard(chooseBoard);
-            playerRecord.push_back(player);
-            boardRecord.push_back(board);
             ui.startPlay(this);
             ui.end();
         }
     } catch (QuitGameException &e) {
+        ui.stopProgram();
         return;
     }
 }
@@ -55,32 +53,6 @@ void Game<T>::loadBoard(std::string filename) {
     1(箱子)
     2(終點)
     */
-}
-
-template<class T>
-void Game<T>::move(const Index &from, const Index &direction) {
-    if(abs(direction.i) + abs(direction.j) != 1) {
-        throw Exception("Invalid direction");
-    }
-    if(!isSafe(from) || !isSafe(from + direction)) {
-        throw InvalidMoveException();
-    }
-    if(getGameObj(from + direction).isWall()) {
-        throw InvalidMoveException();
-    }
-    if(getGameObj(from).isPlayer() && getGameObj(from + direction).isBox()) {
-        move(from + direction, direction);
-        swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
-        return;
-    }
-    else if(getGameObj(from).isBox() && getGameObj(from + direction).isBox()) {
-        throw InvalidMoveException();
-    }
-    if(getGameObj(from + direction).isRoad() || getGameObj(from + direction).isCheckPoint()) {
-        swapGameObj(board[from.i][from.j], board[from.i + direction.i][from.j + direction.j]);
-        return;
-    }
-    throw InvalidMoveException();
 }
 
 template<class T>
@@ -144,12 +116,30 @@ bool Game<T>::isLose() {
 
 template<class T>
 void Game<T>::playMove(const Index &to) {
-    try {
-        move(player, to);
+    if(abs(to.i) + abs(to.j) != 1) {
+        return;
+    }
+    if(!isSafe(player) || !isSafe(player + to)) {
+        return;
+    }
+    if(getGameObj(player + to).isWall()) {
+        return;
+    }
+    if(getGameObj(player).isPlayer() && getGameObj(player + to).isBox()) {
+        if(!isSafe(player + to + to) || getGameObj(player + to + to).isWall() || getGameObj(player + to + to).isBox()) {
+            return;
+        }
+        swapGameObj(getGameObj(player + to), getGameObj(player + to + to));
+        swapGameObj(getGameObj(player), getGameObj(player + to));
+        moveRecord.push_back({to, player, player + to});
         player += to;
-        playerRecord.push_back(player);
-        boardRecord.push_back(board);
-    } catch (InvalidMoveException &e) {
+    }
+    else if(getGameObj(player + to).isRoad() || getGameObj(player + to).isCheckPoint()) {
+        swapGameObj(getGameObj(player), getGameObj(player + to));
+        moveRecord.push_back({to, player});
+        player += to;
+    }
+    else {
         return;
     }
     ui.showBoard(board);
@@ -165,13 +155,26 @@ void Game<T>::playMove(const Index &to) {
 
 template<class T>
 void Game<T>::retToPrev() {
-    if(boardRecord.size() <= 1) {
+    if(moveRecord.empty()) {
         return;
     }
-    boardRecord.pop_back();
-    playerRecord.pop_back();
-    player = playerRecord.back();
-    board = boardRecord.back();
+    vector<Index> lastMove = moveRecord.back();
+    moveRecord.pop_back();
+    Index to = lastMove[0];
+    Index ogPlayer = lastMove[1];
+    Index ogBox = lastMove[2];
+    if(ogPlayer + to != player) {
+        throw Exception("Player position error");
+    }
+
+    if(lastMove.size() == 2) {
+        swapGameObj(getGameObj(ogPlayer), getGameObj(ogPlayer + to));
+    }
+    else {
+        swapGameObj(getGameObj(ogPlayer), getGameObj(ogPlayer + to));
+        swapGameObj(getGameObj(ogPlayer + to), getGameObj(ogBox + lastMove[0]));
+    }
+    player = ogPlayer;
     ui.showBoard(board);
 }
 

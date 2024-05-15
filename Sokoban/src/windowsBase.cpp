@@ -19,9 +19,13 @@ void MainProgram::startMessageLoop(){
     isRunning = true;
     //cout << "start message loop\n";
     MSG msg = {};
-    while (isRunning && GetMessage(&msg, NULL, 0, 0) > 0) {
+    BOOL bRet = 0;
+    while (isRunning && (bRet = GetMessage(&msg, NULL, 0, 0)) > 0) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
+    }
+    if(bRet == 0) {
+        exit(0);
     }
     /*  消息迴圈  */
 }
