@@ -57,6 +57,10 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
 }
 
 void WindowUserInterface::end() {
+    ButtonLike::deleteFromWindow(mainWindow, "surrender");
+    ButtonLike::deleteFromWindow(mainWindow, "return");
+    mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
+    mainWindow->imageShower.refreshInstant();
     mainWindow->keyboardProcesser.insertEvent(VK_RETURN, []() {
         MainProgram::stopMessageLoop(); 
     });

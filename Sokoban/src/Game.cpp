@@ -17,8 +17,10 @@ void Game<T>::start() {
             int chooseBoardIndex = ui.boardChoose(boardList);
             string chooseBoard = boardList[chooseBoardIndex].string();
             loadBoard(chooseBoard);
-            ui.startPlay(this);
-            ui.end();
+            while(status == GameStatus::playing) {
+                ui.startPlay(this);
+                ui.end(this);
+            }
         }
     } catch (QuitGameException &e) {
         ui.stopProgram();
