@@ -14,7 +14,7 @@ void WindowUserInterface::showStart() {
     ButtonLike start("start", [](){
         MainProgram::stopMessageLoop();
     });
-    ButtonLike::insertToWindow(mainWindow, start, {500, 300});
+    ButtonLike::insertToWindow(mainWindow, start, {800, 410});
     MainProgram::startMessageLoop();
 }
 
@@ -130,6 +130,7 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
     }
     this->prevBoard = board;
 }
+
 
 void WindowUserInterface::showWin() {
     ButtonLike::deleteFromWindow(mainWindow, "surrender");

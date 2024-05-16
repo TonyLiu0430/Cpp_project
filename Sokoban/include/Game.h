@@ -53,6 +53,12 @@ struct Index{
     }
 };
 
+enum class GameStatus {
+    playing,
+    win,
+    lose
+};
+
 template<class UserInterface_Type>
 class Game {
     std::list<std::vector<Index>> moveRecord;
@@ -61,6 +67,7 @@ public:
     std::vector<std::vector<GameObj>> board;
     GameObj& getGameObj(const Index &index);
     Index player;
+    GameStatus status = GameStatus::playing;
     void retToPrev();
     void start();
     void loadBoard(std::string filename);

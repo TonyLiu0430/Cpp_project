@@ -73,8 +73,6 @@ bool Game<T>::isSafe(int i, int j) {
     return i >= 0 && i < board.size() && j >= 0 && j < board[i].size();
 }
 
-
-
 template<class T>
 bool Game<T>::isWin() {
     for (int i = 0; i < board.size(); i++ ) {
@@ -144,10 +142,12 @@ void Game<T>::playMove(const Index &to) {
     }
     ui.showBoard(board);
     if(isWin()) {
+        status = GameStatus::win;
         ui.showWin();
         ui.stopMessageLoop();
     }
     if(isLose()) {
+        status = GameStatus::lose;
         ui.showLose();
         ui.stopMessageLoop();
     }

@@ -126,7 +126,7 @@ void Window::createMain(std::string name) {
         NULL        // Additional application data
         );
 
-    ShowWindow(mainWindow->getHWnd(), MainProgram::nCmdShow);
+    ShowWindow(mainWindow->getHWnd(), SW_SHOWMAXIMIZED);
     SetProcessDPIAware();
 }
 
