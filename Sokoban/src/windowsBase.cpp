@@ -110,7 +110,7 @@ void Window::createMain(std::string name) {
     RegisterClass(&windowData);
 
     // Create the window.
-
+    SetProcessDPIAware();
     mainWindow = create(
         WS_EX_COMPOSITED,                              // Optional window styles.
         name.c_str(),             // Window class
@@ -118,7 +118,7 @@ void Window::createMain(std::string name) {
         WS_OVERLAPPEDWINDOW,            // Window style
 
         // Size and position
-        0, 0, 1920, 1080,
+        0, 0, CW_USEDEFAULT, 0,
 
         NULL,       // Parent window    
         NULL,       // Menu
@@ -127,7 +127,6 @@ void Window::createMain(std::string name) {
         );
 
     ShowWindow(mainWindow->getHWnd(), SW_SHOWMAXIMIZED);
-    SetProcessDPIAware();
 }
 
 void Window::remove(Window* window) {
