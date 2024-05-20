@@ -25,7 +25,7 @@ namespace fs {
         template<class ...Args>
         path(Args&& ...args): std::string(std::forward<Args>(args)...) {}
         path filename() const {
-            return this->substr(this->find_last_of('\\') + 1);
+            return substr(find_last_of('\\') + 1);
         }
         path string() const {
             return *this;

@@ -18,7 +18,7 @@ public:
     void showStart();
     int boardChoose(const std::vector<fs::path> &boardList);
     void showBoard(const std::vector<std::vector<GameObj>> &board, bool init = false);
-    void end();
+    void end(Game<WindowUserInterface> *game);
     //void showWin();
     //void showLose();
     void startMessageLoop();

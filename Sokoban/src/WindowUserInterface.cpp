@@ -41,7 +41,7 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
         game->retToPrev(); 
     });
     mainWindow->keyboardProcesser.insertEvent(VK_Q, [=](){
-        showLose();
+        game->status = GameStatus::lose;
         MainProgram::stopMessageLoop(); 
     });
 
@@ -50,17 +50,38 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
     }, ButtonLike::ActionTag::repeat);
     ButtonLike::insertToWindow(mainWindow, ret, {0, Image::statusWidth + 50});
 
+    mainWindow->imageShower.insertImage(imageManager.getImage("playing"), {0, 0});
+    ButtonLike surrender("surrender", [=](){
+        game->status = GameStatus::lose;
+        MainProgram::stopMessageLoop(); 
+    });
+    ButtonLike::insertToWindow(mainWindow, surrender, {0, Image::statusWidth + 250});
+
     showBoard(game->board, true);
     startMessageLoop();
     /*Loop out*/
     mainWindow->keyboardProcesser.clear();
 }
 
-void WindowUserInterface::end() {
+void WindowUserInterface::end(Game<WindowUserInterface> *game) {
     ButtonLike::deleteFromWindow(mainWindow, "surrender");
     ButtonLike::deleteFromWindow(mainWindow, "return");
+    Image *endStatusImage = nullptr;
+    if(game->status == GameStatus::win) {
+        endStatusImage = imageManager.getImage("win");
+    }
+    else if(game->status == GameStatus::lose) {
+        endStatusImage = imageManager.getImage("lose");
+    }
+    mainWindow->imageShower.insertImage(endStatusImage, {Image::statusLen + 300, Image::statusWidth + 300});
     mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
     mainWindow->imageShower.refreshInstant();
+    const WPARAM VK_R = 0x52;
+    mainWindow->keyboardProcesser.insertEvent(VK_R, [=]() {
+        game->status = GameStatus::playing;
+        game->retToPrev();
+        MainProgram::stopMessageLoop();
+    });
     mainWindow->keyboardProcesser.insertEvent(VK_RETURN, []() {
         MainProgram::stopMessageLoop(); 
     });
@@ -80,15 +101,6 @@ void WindowUserInterface::stopMessageLoop() {
 }
 
 void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &board, bool init) {
-    if(init) {
-        mainWindow->imageShower.insertImage(imageManager.getImage("playing"), {0, 0});
-        ButtonLike surrender("surrender", [=](){
-            showLose();
-            MainProgram::stopMessageLoop(); 
-        });
-        ButtonLike::insertToWindow(mainWindow, surrender, {0, Image::statusWidth + 250});
-        /*return button TODO*/
-    }
     for(int i = 0; i < board.size(); i++) {
         for(int j = 0; j < board[i].size(); j++) {
             if(init || board[i][j] != prevBoard[i][j]) {
@@ -135,7 +147,7 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
     this->prevBoard = board;
 }
 
-
+/*
 void WindowUserInterface::showWin() {
     ButtonLike::deleteFromWindow(mainWindow, "surrender");
     ButtonLike::deleteFromWindow(mainWindow, "return");
@@ -151,7 +163,7 @@ void WindowUserInterface::showLose() {
     mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
     mainWindow->imageShower.refreshInstant();
 }
-
+*/
 int WindowUserInterface::boardChoose(const vector<fs::path> &boardList) {
     int chooseIndex = 0;
     int hasImageCnt = 0;
