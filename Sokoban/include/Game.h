@@ -61,9 +61,9 @@ enum class GameStatus {
 
 template<class UserInterface_Type>
 class Game {
-    std::list<std::vector<Index>> moveRecord;
     UserInterface_Type ui;
 public:
+    std::list<std::vector<Index>> moveRecord;
     std::vector<std::vector<GameObj>> board;
     GameObj& getGameObj(const Index &index);
     Index player;

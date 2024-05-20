@@ -3,6 +3,9 @@
 #include <bits/stdc++.h>
 #ifdef _WIN32
 #include <conio.h>
+#else
+#include <termios.h>
+#include <unistd.h>
 #endif
 
 #include "util.h"
@@ -11,11 +14,21 @@ using namespace std;
 
 static char getChar() {
     #ifdef _WIN32
-    return _getch();
+    char ch = _getch();
+    if(ch == '\r') {
+        return '\n';
+    }
+    return ch;
     #else
-    string str;
-    cin >> str;
-    return str.size() == 0 ? ' ' : str[0];
+    termios oldattr, newattr;
+    int ch;
+    tcgetattr(STDIN_FILENO, &oldattr);
+    newattr = oldattr;
+    newattr.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newattr);
+    ch = std::getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);
+    return ch;
     #endif
 }
 
@@ -52,7 +65,7 @@ void ConsoleUserInterface::startPlay(Game<ConsoleUserInterface> *game) {
     startMessageLoop();
     /*Loop out*/
     charCallback.clear();
-    clearScreen();
+    //clearScreen();
 }
 
 void ConsoleUserInterface::insertCharCallback(char c, function<void()> callback) {
@@ -133,7 +146,7 @@ void ConsoleUserInterface::showBoard(const vector<vector<GameObj>> &board) {
             }
             else if(board[i][j].isPlayer()) {
                 if(board[i][j].isCheckPoint()) {
-                    cout << "0";
+                    cout << "i";
                 }
                 else {
                     cout << "0";
@@ -148,6 +161,7 @@ void ConsoleUserInterface::showBoard(const vector<vector<GameObj>> &board) {
 }
 
 void ConsoleUserInterface::end(Game<ConsoleUserInterface> *game) {
+    cout << "\n\n";
     if(game->status == GameStatus::win) {
         showWin();
     }

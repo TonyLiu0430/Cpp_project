@@ -52,6 +52,7 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
 
     mainWindow->imageShower.insertImage(imageManager.getImage("playing"), {0, 0});
     ButtonLike surrender("surrender", [=](){
+        game->moveRecord.push_back({});
         game->status = GameStatus::lose;
         MainProgram::stopMessageLoop(); 
     });
@@ -72,16 +73,19 @@ void WindowUserInterface::end(Game<WindowUserInterface> *game) {
     }
     else if(game->status == GameStatus::lose) {
         endStatusImage = imageManager.getImage("lose");
+        const WPARAM VK_R = 0x52;
+        function<void(void)> retToPrevFunc = [=]() {
+            game->status = GameStatus::playing;
+            game->retToPrev();
+            MainProgram::stopMessageLoop();
+        };
+        mainWindow->keyboardProcesser.insertEvent(VK_R, retToPrevFunc);
+        ButtonLike ret("return", retToPrevFunc);
+        ButtonLike::insertToWindow(mainWindow, ret, {0, Image::statusWidth + 50});
     }
     mainWindow->imageShower.insertImage(endStatusImage, {Image::statusLen + 300, Image::statusWidth + 300});
     mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
     mainWindow->imageShower.refreshInstant();
-    const WPARAM VK_R = 0x52;
-    mainWindow->keyboardProcesser.insertEvent(VK_R, [=]() {
-        game->status = GameStatus::playing;
-        game->retToPrev();
-        MainProgram::stopMessageLoop();
-    });
     mainWindow->keyboardProcesser.insertEvent(VK_RETURN, []() {
         MainProgram::stopMessageLoop(); 
     });
@@ -147,23 +151,6 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
     this->prevBoard = board;
 }
 
-/*
-void WindowUserInterface::showWin() {
-    ButtonLike::deleteFromWindow(mainWindow, "surrender");
-    ButtonLike::deleteFromWindow(mainWindow, "return");
-    mainWindow->imageShower.insertImage("win", imageManager.getImage("win"), {Image::statusLen + 300, Image::statusWidth + 300});
-    mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
-    mainWindow->imageShower.refreshInstant();
-}
-
-void WindowUserInterface::showLose() {
-    ButtonLike::deleteFromWindow(mainWindow, "surrender");
-    ButtonLike::deleteFromWindow(mainWindow, "return");
-    mainWindow->imageShower.insertImage("lose", imageManager.getImage("lose"), {Image::statusLen + 300, Image::statusWidth + 300});
-    mainWindow->imageShower.insertImage("pressEnter", imageManager.getImage("pressEnter"), {Image::statusLen + 300, Image::statusWidth + 550});
-    mainWindow->imageShower.refreshInstant();
-}
-*/
 int WindowUserInterface::boardChoose(const vector<fs::path> &boardList) {
     int chooseIndex = 0;
     int hasImageCnt = 0;

@@ -161,6 +161,9 @@ void Game<T>::retToPrev() {
     }
     vector<Index> lastMove = moveRecord.back();
     moveRecord.pop_back();
+    if(lastMove.size() == 0) {
+        return;
+    }
     Index to = lastMove[0];
     Index ogPlayer = lastMove[1];
     Index ogBox = lastMove[2];
