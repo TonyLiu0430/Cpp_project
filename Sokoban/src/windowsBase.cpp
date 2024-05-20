@@ -65,14 +65,14 @@ Window::Window(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD d
         lpParam
     );
     if(hWnd == NULL) {
-        throw Exception("window create error");
+        throw UnexpectedException("window create error");
     }
     hWndObjs[hWnd] = this;
 }
 
 Window* Window::getWindow(HWND hWnd) {
     if(hWndObjs.find(hWnd) == hWndObjs.end()) {
-        //throw Exception("cannot find windows instance");
+        //throw UnexpectedException("cannot find windows instance");
         cerr << "cannot find windows instance: unexcepted ERROR\n";
         throw FindWindowException();
     }

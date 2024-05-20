@@ -3,9 +3,11 @@
 #include "filesystemCompatible.h"
 using namespace std;
 
-Exception::Exception(string message): message(message) {}
+UnexpectedException::UnexpectedException(string message): message(message) {
+    message = "UnexpectedException: " + message;
+}
 
-const char* Exception::what() const throw() {
+const char* UnexpectedException::what() const throw() {
     return message.c_str();
 }
 
@@ -14,10 +16,10 @@ Point::Point(int x, int y): x(x), y(y) {}
 Area::Area(int x, int y, int length, int width): x(x), y(y), length(length), width(width) {}
 
 Area::Area(const pair<int, int> &coordinate, const pair<int, int> &size): 
- x(coordinate.first),
- y(coordinate.second),
- length(size.first),
- width(size.second) {}
+    x(coordinate.first),
+    y(coordinate.second),
+    length(size.first),
+    width(size.second) {}
 
 bool Area::operator==(const Area &other) const {
     return x == other.x && y == other.y && length == other.length && width == other.width;
@@ -34,11 +36,11 @@ bool Area::isOut(int px, int py) {
 #ifdef FILESYSTEM_SUPPORTED
 std::vector<fs::path> getBoardList_std_filesystem(std::string dirPath) {
     if(!fs::exists(dirPath)) {
-        throw Exception("missions folder not found");
+        throw UnexpectedException("missions folder not found");
     }
     fs::directory_entry dir(dirPath);
     if(!dir.is_directory()) {
-        throw Exception("missions is not a directory");
+        throw UnexpectedException("missions is not a directory");
     }
     std::vector<fs::path> boardList;
     fs::directory_iterator dirIt(dirPath);
@@ -62,7 +64,7 @@ std::vector<fs::path> getBoardList_win32(std::string dirPath) {
     WIN32_FIND_DATA findFileData;
     HANDLE hFind = FindFirstFile((dirPath + "/*").c_str(), &findFileData);
     if(hFind == INVALID_HANDLE_VALUE) {
-        throw Exception("missions folder not found");
+        throw UnexpectedException("missions folder not found");
     }
     do {
         if(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {

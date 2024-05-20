@@ -77,10 +77,3 @@ public:
     bool isSafe(const Index &index);
     bool isSafe(int i, int j);
 };
-
-class QuitGameException : public std::exception {
-public:
-    virtual const char* what() const throw() override {
-        return "Quit Game";
-    }
-};

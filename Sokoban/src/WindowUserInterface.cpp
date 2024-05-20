@@ -135,7 +135,7 @@ void WindowUserInterface::showBoard(const std::vector<std::vector<GameObj>> &boa
                     image = imageManager.getImage("checkPoint");
                 }
                 if(image == nullptr) {
-                    throw Exception("Invalid GameObj Data");
+                    throw UnexpectedException("Invalid GameObj Data");
                 }
                 Point p = {Image::statusLen + 30 + j * Image::GameObjLen, Image::statusWidth + 30 + i * Image::GameObjLen};
                 mainWindow->imageShower.insertImage(to_string(i) + "-" + to_string(j), image, p);

@@ -3,11 +3,11 @@
 #include <string>
 #include <set>
 
-class Exception: public std::exception {
+class UnexpectedException: public std::exception {
     const std::string message;
 public:
     virtual const char* what() const throw() override;
-    Exception(std::string message);
+    UnexpectedException(std::string message);
 };
 
 struct Point {

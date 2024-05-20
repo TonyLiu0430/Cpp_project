@@ -9,23 +9,18 @@ using namespace std;
 
 template<class T>
 void Game<T>::start() {
-    try {
-        ui.showStart();
-        vector<fs::path> boardList = getBoardList("missions");
-        while(true) {
-            moveRecord.clear();
-            int chooseBoardIndex = ui.boardChoose(boardList);
-            string chooseBoard = boardList[chooseBoardIndex].string();
-            loadBoard(chooseBoard);
-            while(status == GameStatus::playing) {
-                ui.startPlay(this);
-                ui.end(this);
-            }
-            status = GameStatus::playing;
+    ui.showStart();
+    vector<fs::path> boardList = getBoardList("missions");
+    while(true) {
+        moveRecord.clear();
+        int chooseBoardIndex = ui.boardChoose(boardList);
+        string chooseBoard = boardList[chooseBoardIndex].string();
+        loadBoard(chooseBoard);
+        while(status == GameStatus::playing) {
+            ui.startPlay(this);
+            ui.end(this);
         }
-    } catch (QuitGameException &e) {
-        ui.stopProgram();
-        return;
+        status = GameStatus::playing;
     }
 }
 
@@ -33,7 +28,7 @@ template<class T>
 void Game<T>::loadBoard(std::string filename) {
     std::ifstream file(filename);
     if (!file) {
-        throw Exception(filename + "Map file not found");
+        throw UnexpectedException(filename + "Map file not found");
     }
     int n, m;
     file >> n >> m;
@@ -61,7 +56,7 @@ void Game<T>::loadBoard(std::string filename) {
 template<class T>
 GameObj& Game<T>::getGameObj(const Index &index) {
     if(!isSafe(index)) {
-        throw Exception("index ERROR");
+        throw UnexpectedException("index ERROR");
     }
     return board[index.i][index.j];
 }
@@ -168,7 +163,7 @@ void Game<T>::retToPrev() {
     Index ogPlayer = lastMove[1];
     Index ogBox = lastMove[2];
     if(ogPlayer + to != player) {
-        throw Exception("Player position error");
+        throw UnexpectedException("Player position error");
     }
 
     if(lastMove.size() == 2) {
@@ -210,7 +205,7 @@ GameObj::GameObj(char input) {
         data = box | checkPoint;
     }
     else {
-        throw Exception("Invalid input");
+        throw UnexpectedException("Invalid input");
     }
 }
 

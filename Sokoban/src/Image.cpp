@@ -9,7 +9,7 @@ Image::Image(string name, int length, int width): name(name), length(length), wi
     LPCSTR imagePath = path.c_str();
     imageHandle = LoadImage(NULL, imagePath, IMAGE_BITMAP, length, width, LR_LOADFROMFILE);
     if(imageHandle == NULL) {
-        throw Exception(name + " image not Found or load failed");
+        throw UnexpectedException(name + " image not Found or load failed");
     }
 }
 
@@ -95,7 +95,7 @@ ImageManager::~ImageManager() {
 
 Image* ImageManager::getImage(std::string name) {
     if(images.find(name) == images.end()) {
-        throw Exception(name + " Image didn't initiallize OR not found");
+        throw UnexpectedException(name + " Image didn't initiallize OR not found");
     }
     return images[name];
 }
