@@ -16,7 +16,7 @@ public:
     void showStart();
     int boardChoose(const std::vector<fs::path> &boardList);
     void showBoard(const std::vector<std::vector<GameObj>> &board);
-    void end();
+    void end(Game<ConsoleUserInterface> *game);
     void showWin();
     void showLose();
     void startMessageLoop();

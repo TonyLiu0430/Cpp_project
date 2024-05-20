@@ -21,6 +21,7 @@ void Game<T>::start() {
                 ui.startPlay(this);
                 ui.end(this);
             }
+            status = GameStatus::playing;
         }
     } catch (QuitGameException &e) {
         ui.stopProgram();
@@ -145,12 +146,10 @@ void Game<T>::playMove(const Index &to) {
     ui.showBoard(board);
     if(isWin()) {
         status = GameStatus::win;
-        ui.showWin();
         ui.stopMessageLoop();
     }
     if(isLose()) {
         status = GameStatus::lose;
-        ui.showLose();
         ui.stopMessageLoop();
     }
 }

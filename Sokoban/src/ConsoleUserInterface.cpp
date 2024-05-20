@@ -147,7 +147,13 @@ void ConsoleUserInterface::showBoard(const vector<vector<GameObj>> &board) {
     }
 }
 
-void ConsoleUserInterface::end() {
+void ConsoleUserInterface::end(Game<ConsoleUserInterface> *game) {
+    if(game->status == GameStatus::win) {
+        showWin();
+    }
+    else if(game->status == GameStatus::lose) {
+        showLose();
+    }
     cout << "遊戲結束" << endl;
     cout << endl;
     cout << "按任意鍵繼續..." << endl;
