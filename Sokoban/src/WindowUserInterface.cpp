@@ -90,7 +90,7 @@ void WindowUserInterface::end(Game<WindowUserInterface> *game) {
     });
     startMessageLoop();
     /*Loop out*/
-    ButtonLike::deleteFromWindow(mainWindow, "return");
+    ButtonLike::deleteAllFromWindow(mainWindow);
     mainWindow->keyboardProcesser.clear();
     mainWindow->imageShower.clear();
     mainWindow->imageShower.refreshInstant();
@@ -191,6 +191,7 @@ int WindowUserInterface::boardChoose(const vector<fs::path> &boardList) {
     mainWindow->textShower.clear();
     mainWindow->imageShower.clear();
     mainWindow->imageShower.refreshInstant();
+    ButtonLike::deleteAllFromWindow(mainWindow);
     return chooseIndex;
 }
 

@@ -67,6 +67,7 @@ public:
 
     static void insertToWindow(Window *window, ButtonLike button, Point p);
     static void deleteFromWindow(Window *window, std::string name);
+    static void deleteAllFromWindow(Window *window);
 };
 
 

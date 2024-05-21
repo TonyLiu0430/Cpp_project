@@ -163,6 +163,20 @@ void ButtonLike::deleteFromWindow(Window *window, string name) {
     buttonAreas.erase(name);
 }
 
+void ButtonLike::deleteAllFromWindow(Window *window) {
+    for(auto &[name, area]: buttonAreas) {
+        window->mouseProcesser.moveOut.removeEvent(area);
+        window->mouseProcesser.moveIn.removeEvent(area);
+        window->mouseProcesser.click.removeEvent(area);
+
+        /***/window->textShower.removeText(name);
+        if(window->imageShower.removeImage(name + "_before") | window->imageShower.removeImage(name + "_after")) {
+            window->imageShower.refreshArea(area);
+        }
+    }
+    buttonAreas.clear();
+}
+
 
 
 #endif
