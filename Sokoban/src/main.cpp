@@ -20,6 +20,10 @@ int main() {
     cout << "按下 1 以視窗應用程式介面開啟遊戲" << endl;
     cin >> mode;
     #endif
+    while(mode != 0 && mode != 1) {
+        cout << "請輸入0或1" << endl;
+        cin >> mode;
+    }
     if(mode != 1) {
         Game<ConsoleUserInterface> game;
         game.start();

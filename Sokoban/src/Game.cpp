@@ -161,7 +161,6 @@ void Game<T>::retToPrev() {
     }
     Index to = lastMove[0];
     Index ogPlayer = lastMove[1];
-    Index ogBox = lastMove[2];
     if(ogPlayer + to != player) {
         throw UnexpectedException("Player position error");
     }
@@ -170,6 +169,7 @@ void Game<T>::retToPrev() {
         swapGameObj(getGameObj(ogPlayer), getGameObj(ogPlayer + to));
     }
     else {
+        Index ogBox = lastMove[2];
         swapGameObj(getGameObj(ogPlayer), getGameObj(ogPlayer + to));
         swapGameObj(getGameObj(ogPlayer + to), getGameObj(ogBox + lastMove[0]));
     }

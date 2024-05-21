@@ -1,5 +1,6 @@
 *.odt
 *.docx
 *.exe
+*.zip
 .clang-tidy
 .idea

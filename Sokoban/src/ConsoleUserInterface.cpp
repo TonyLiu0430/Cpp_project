@@ -58,7 +58,7 @@ void ConsoleUserInterface::startPlay(Game<ConsoleUserInterface> *game) {
         game->retToPrev();
     });
     insertCharCallback('q', [=](){
-        showLose();
+        game->status = GameStatus::lose;
         stopMessageLoop();
     });
     showBoard(game->board);
@@ -113,6 +113,10 @@ int ConsoleUserInterface::boardChoose(const vector<fs::path> &boardList) {
     int choose;
     cin >> choose;
     while(choose < 1 || choose > boardList.size()) {
+        if(cin.fail()) {
+            cin.clear();
+            cin.sync();
+        }
         cout << "請輸入範圍內數字 : " << 1 << " ~ " << boardList.size() << endl;
         cin >> choose;
     }

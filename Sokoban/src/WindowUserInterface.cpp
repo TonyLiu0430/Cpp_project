@@ -44,7 +44,6 @@ void WindowUserInterface::startPlay(Game<WindowUserInterface> *game) {
         game->status = GameStatus::lose;
         MainProgram::stopMessageLoop(); 
     });
-
     ButtonLike ret("return", [=](){
         game->retToPrev(); 
     }, ButtonLike::ActionTag::repeat);
@@ -91,6 +90,7 @@ void WindowUserInterface::end(Game<WindowUserInterface> *game) {
     });
     startMessageLoop();
     /*Loop out*/
+    ButtonLike::deleteFromWindow(mainWindow, "return");
     mainWindow->keyboardProcesser.clear();
     mainWindow->imageShower.clear();
     mainWindow->imageShower.refreshInstant();
