@@ -17,8 +17,6 @@ class Image;
 
 class MainProgram {
     inline static bool isRunning = false;
-    //inline static std::mutex messageLoopMutex{};
-    //inline static atomic_bool callByMsgLoop = false;
 public:
     inline static HINSTANCE hInstance{};
     inline static int nCmdShow{};
@@ -47,7 +45,6 @@ public:
     HWND getHWnd();
     void registerMessageCB(UINT msg, std::function <void(WPARAM, LPARAM)> callBack);
     void registerMessageCB(UINT msg, std::function <void()> callBack);
-    //void createButton(std::string name, Area area, function<void()> callBack);
     class KeyboardProcesser {
         std::map<WPARAM, std::function<void()>> keyCBs;
     public:
