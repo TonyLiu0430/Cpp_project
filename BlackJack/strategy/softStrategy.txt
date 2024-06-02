@@ -8,4 +8,4 @@
 7	S	DS	DS	DS	DS	S	S	H	H	H
 8	S	S	S	S	DS	S	S	S	S	S
 9	S	S	S	S	S	S	S	S	S	S
-10	W   	W	W	W	W	W	W	W	W	W
+10	W   W	W	W	W	W	W	W	W	W
