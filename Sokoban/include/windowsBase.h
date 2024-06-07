@@ -8,6 +8,7 @@
 #include <map>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include "Image.h"
 #include "util.h"
 
@@ -16,7 +17,7 @@
 class Image;
 
 class MainProgram {
-    inline static bool isRunning = false;
+    inline static std::atomic_bool isRunning = false;
 public:
     inline static HINSTANCE hInstance{};
     inline static int nCmdShow{};

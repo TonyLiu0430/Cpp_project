@@ -54,11 +54,11 @@ public:
     const std::string imageName;
     enum class ActionTag {
         once,
-        repeat
+        repeat,
     };
     enum class ButtonStyle {
         onlyImage,
-        withText
+        withText,
     };
     ActionTag tag;
     ButtonStyle style;

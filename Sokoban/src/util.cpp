@@ -3,9 +3,7 @@
 #include "filesystemCompatible.h"
 using namespace std;
 
-UnexpectedException::UnexpectedException(string message): message(message) {
-    message = "UnexpectedException: " + message;
-}
+UnexpectedException::UnexpectedException(string message): message("UnexpectedException: " + message) {}
 
 const char* UnexpectedException::what() const throw() {
     return message.c_str();
